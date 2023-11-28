@@ -1,16 +1,25 @@
 package project.musicwebsite.service.i;
 
 import project.musicwebsite.entity.Album;
+import project.musicwebsite.entity.Song;
+import project.musicwebsite.model.dto.AlbumDTO;
+import project.musicwebsite.model.dto.SongDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IAlbumService {
-    Album save(Long id,Album album);
+    Album save(Long id, Album album);
     Album update(Long id,Album album);
-    Optional<Album> findById(Long id);
+    Album findById(Long id);
     List<Album> getAll();
-    List<Album> getBySinger(Long singerId);
+    List<AlbumDTO> getBySinger(Long singerId);
     void delete(Long albumId);
+
+    List<Album> getByName(String string);
+
+    List<SongDTO> getSongByAlbumId(Long albumId);
+
+    void removeSongFromAlbum(Long albumId,Long songId);
 
 }

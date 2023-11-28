@@ -1,10 +1,10 @@
 package project.musicwebsite.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import java.util.Date;
 @MappedSuperclass
 public class AbstractModel {
 
-    @JsonIgnore
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy@HH:mm:ss.SSSZ")
     private Date createdDate;
 
     public AbstractModel(String createdBy, String modifiedBy) {
@@ -30,7 +30,7 @@ public class AbstractModel {
 
     @JsonIgnore
     private String createdBy;
-    @JsonIgnore
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy@HH:mm:ss.SSSZ")
     private Date modifiedDate;
     @JsonIgnore
     private String modifiedBy;

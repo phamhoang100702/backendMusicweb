@@ -11,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class AlbumDTO {
+    private Long id;
     private String name;
     private Date publish;
     private String thumbnail;

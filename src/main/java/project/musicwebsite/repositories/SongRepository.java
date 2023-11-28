@@ -18,5 +18,18 @@ public interface SongRepository extends  JpaRepository<Song,Long> {
 
     Optional<Song> findByFileLyricOrFileSong(String fileLyric,String fileSong);
 
+    @Query(
+            value = "SELECT songs.id from Songtbl songs where songs.albumId=?1",
+    nativeQuery = true
+    )
+    List<Long> findSongsByAlbumId(Long albumId);
+
+
+
+    @Query(
+            value = "SELECT songs.id from Songtbl songs where songs.singerId=?1",
+            nativeQuery = true
+    )
+    List<Long> findSongBySingerId(Long singerId);
 
 }

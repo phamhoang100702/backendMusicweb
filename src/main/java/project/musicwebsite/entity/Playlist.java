@@ -37,8 +37,8 @@ public class Playlist extends  AbstractModel{
 
 
     @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name="SongPlaylisttbl",

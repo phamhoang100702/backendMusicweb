@@ -63,6 +63,22 @@ public class SongController {
         );
     }
 
+    @PostMapping(path = "/album/{albumId}/song/{songId}")
+    ResponseEntity<ResponseObject> addSongToAlbum(@PathVariable Long albumId,
+                                                  @PathVariable Long songId){
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok","Success",songService.addSongToAlbum(albumId,songId))
+        );
+    }
+
+    @GetMapping(path = "/singer/{id}/song")
+    ResponseEntity<ResponseObject> getSongBySignerId(@PathVariable Long id){
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "SUCCESS", songService.findSongBySingerId(id))
+        );
+
+    }
+
 
 
 }

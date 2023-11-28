@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
-import project.musicwebsite.exception.DataIntegrityViolationException;
+import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.UserRepository;
@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     @Override
     public User save(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
-        if(userOptional.isPresent()) throw new DataIntegrityViolationException("Email existed");
+        if(userOptional.isPresent()) throw new BadRequestException("Email existed");
         return  userRepository.save(user);
     }
 

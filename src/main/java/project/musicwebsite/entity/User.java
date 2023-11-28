@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Data
@@ -31,7 +32,6 @@ public class User extends AbstractModel {
             strategy = GenerationType.SEQUENCE,
             generator = "user_sequence"
     )
-    @JsonIgnore
     private Long id;
 
     @Column(
@@ -70,5 +70,17 @@ public class User extends AbstractModel {
         this.password = password;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, email);
+    }
 }

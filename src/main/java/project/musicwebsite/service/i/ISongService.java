@@ -3,6 +3,7 @@ package project.musicwebsite.service.i;
 import project.musicwebsite.entity.Album;
 import project.musicwebsite.entity.Playlist;
 import project.musicwebsite.entity.Song;
+import project.musicwebsite.model.dto.SongDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,9 @@ public interface ISongService {
     Playlist saveSongToPlaylist(Long idSong,Long idPlaylist);
 
     Playlist removeSongFromPlaylist(Long idSong,Long idPlaylist);
-    Album createSongWithAlbum(Long idAlbum, Song song);
-    Album addExistedSongToAlbum(Album album, Song song);
+    Album addSongToAlbum(Long albumId,Long songId);
     Album removeSongFromPlayList(Long idAlbum,Long idSong);
+
+    List<SongDTO> findSongBySingerId(Long singerId);
     void delete(Long id);
 }

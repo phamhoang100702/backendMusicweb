@@ -64,22 +64,23 @@ public class Song extends AbstractModel {
             name = "albumId",
             nullable = true
     )
+    @JsonIgnore
     private Album album;
 
 
 
 
     @ManyToOne(
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @JoinColumn(name = "singerId", nullable = true)
-    @JsonIgnore
+
     private Singer singer;
 
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+//            cascade = CascadeType.ALL,
             mappedBy = "songs"
     )
     @JsonIgnore

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -56,4 +57,21 @@ public class Singer extends User {
     public boolean existFollower(User user) {
         return this.followers.contains(user);
     }
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "singer"
+    )
+    @JsonIgnore
+    private List<Song> songs = new LinkedList<>();
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "singer"
+    )
+    @JsonIgnore
+    private List<Album> albums = new LinkedList<>();
+
 }

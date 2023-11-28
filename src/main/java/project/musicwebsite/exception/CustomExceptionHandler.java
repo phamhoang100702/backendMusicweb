@@ -27,8 +27,8 @@ public class CustomExceptionHandler {
         );
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest webRequest) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(BadRequestException ex, WebRequest webRequest) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ExceptionResponse(HttpStatus.BAD_REQUEST, new Date(),
                         ex.getMessage(), webRequest.getDescription(false))
@@ -39,6 +39,14 @@ public class CustomExceptionHandler {
     public ResponseEntity<ExceptionResponse> hanldeAllException(Exception ex, WebRequest webRequest) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, new Date(),
+                        ex.getMessage(), webRequest.getDescription(false))
+        );
+    }
+
+    @ExceptionHandler(NoContentException.class)
+    public ResponseEntity<ExceptionResponse> handleNoContent(Exception ex, WebRequest webRequest) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
+                new ExceptionResponse(HttpStatus.NO_CONTENT, new Date(),
                         ex.getMessage(), webRequest.getDescription(false))
         );
     }

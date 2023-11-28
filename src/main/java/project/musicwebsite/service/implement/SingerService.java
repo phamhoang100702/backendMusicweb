@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
-import project.musicwebsite.exception.DataIntegrityViolationException;
+import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.SingerDTO;
 import project.musicwebsite.model.mapper.SingerMapper;
@@ -27,7 +27,7 @@ public class SingerService implements ISingerService {
     @Override
     public Singer save(Singer BSinger) {
         Optional<User> user1 = userRepository.findByEmail(BSinger.getEmail());
-        if (user1.isPresent()) throw new DataIntegrityViolationException("EMAIL EXISTED");
+        if (user1.isPresent()) throw new BadRequestException("EMAIL EXISTED");
         return singerRepository.save(BSinger);
     }
 
@@ -74,7 +74,7 @@ public class SingerService implements ISingerService {
         singerRepository.findById(singerId)
                 .map(singer1 ->
                 {
-                    if (singer1.existFollower(user1)) throw new DataIntegrityViolationException("ALREADY FOLLOW");
+                    if (singer1.existFollower(user1)) throw new BadRequestException("ALREADY FOLLOW");
                     singer1.addFollower(user1);
                     return singerRepository.save(singer1);
                 }).orElseThrow(() -> new NotFoundException("SINGER NOT EXISTED"));
@@ -93,7 +93,7 @@ public class SingerService implements ISingerService {
         singerRepository.findById(singerId)
                 .map(singer -> {
                     if (!singer.existFollower(user1))
-                        throw new DataIntegrityViolationException("NOT FOLLOW");
+                        throw new BadRequestException("NOT FOLLOW");
 
                     singer.removeFollow(user1);
                     return singerRepository.save(singer);

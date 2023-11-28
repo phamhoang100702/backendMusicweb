@@ -10,11 +10,10 @@ import project.musicwebsite.entity.Singer;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SongDTO {
+    private Long id;
     private String name;
     private boolean status;
     private String fileSong;
     private String fileLyric;
-    private Album album;
     private String category;
-    private Singer BSinger;
 }
