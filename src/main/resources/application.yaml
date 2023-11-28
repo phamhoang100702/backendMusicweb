@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;database=musicwebsite;encrypt=false
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: sa
+    password: Phanletruyen123
+    generate-unique-name: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+aws:
+  region: ap-east-1
+  accessKey: AKIATMN2MSYEUJKMIIB2
+  secretKey: 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
+  s3:
+    bucket:
+      name: musing-test
+
+server:
+  port: 9000

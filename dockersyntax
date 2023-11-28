@@ -1,0 +1,6 @@
+docker restart app
+- delete images
+docker rmi image
+- docker build
+docker build -t name .
+- docker 
