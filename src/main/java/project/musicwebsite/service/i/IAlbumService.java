@@ -22,4 +22,6 @@ public interface IAlbumService {
 
     void removeSongFromAlbum(Long albumId,Long songId);
 
+    Long getTotalAlbum();
+
 }

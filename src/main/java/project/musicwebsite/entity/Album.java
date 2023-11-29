@@ -19,14 +19,8 @@ import java.util.List;
 public class Album extends AbstractModel{
 
     @Id
-    @SequenceGenerator(
-            name = "album_sequence",
-            sequenceName = "album_sequence",
-            allocationSize = 1 //increment by 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "album_sequence"
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
     @NotBlank(message = "Name is mandatory")

@@ -15,15 +15,8 @@ import java.util.List;
 
 public class PremiumPackage extends  AbstractModel{
     @Id
-
-    @SequenceGenerator(
-            name = "package_sequence",
-            sequenceName = "package_sequence",
-            allocationSize = 1 //increment by 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "package_sequence"
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
     @Column(nullable = false,unique = true)

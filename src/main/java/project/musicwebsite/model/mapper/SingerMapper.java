@@ -11,7 +11,7 @@ public class SingerMapper {
         singerDTO.setEmail(BSinger.getEmail());
         singerDTO.setBio(BSinger.getBio());
         singerDTO.setLinkSocial(BSinger.getSocialMediaLink());
-        singerDTO.setFollower(BSinger.getFollowers());
+//        singerDTO.setFollower(BSinger.getFollowers());
         return singerDTO;
     }
 }

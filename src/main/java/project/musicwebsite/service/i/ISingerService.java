@@ -18,4 +18,6 @@ public interface ISingerService  {
 
     List<User> findAllFollower(Long id);
 
+    Long getTotalSinger();
+
 }

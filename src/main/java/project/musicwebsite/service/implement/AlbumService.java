@@ -130,4 +130,9 @@ public class AlbumService implements IAlbumService {
         }
         throw new NotFoundException("SONG NOT EXISTED IN THIS ALBUM");
     }
+
+    @Override
+    public Long getTotalAlbum() {
+        return albumRepository.count();
+    }
 }

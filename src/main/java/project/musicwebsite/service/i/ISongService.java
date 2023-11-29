@@ -18,8 +18,9 @@ public interface ISongService {
 
     Playlist removeSongFromPlaylist(Long idSong,Long idPlaylist);
     Album addSongToAlbum(Long albumId,Long songId);
-    Album removeSongFromPlayList(Long idAlbum,Long idSong);
 
     List<SongDTO> findSongBySingerId(Long singerId);
     void delete(Long id);
+
+    Long getTotalSong();
 }

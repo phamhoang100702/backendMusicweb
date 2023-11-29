@@ -1,15 +1,16 @@
 package project.musicwebsite.service.i;
 
 import project.musicwebsite.entity.Playlist;
+import project.musicwebsite.entity.Song;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IPlaylistService {
-    Playlist save(Playlist playlist);
-    Playlist findFavoritePlaylist(Long userId,Long playlistId);
+    Playlist save(Long userId,Playlist playlist);
+    Playlist findFavoritePlaylist(Long userId);
 
-    List<Playlist> getAllForUser();
+    List<Playlist> getAllForUser(Long userId);
 
     List<Playlist> getAll();
 
@@ -17,6 +18,9 @@ public interface IPlaylistService {
 
     Playlist update(Long id,Playlist playlist);
 
-    void delete();
+    void delete(Long id);
 
+    Long getTotalPlayList();
+
+    List<Song> getAllSongForPlaylist(Long id);
 }

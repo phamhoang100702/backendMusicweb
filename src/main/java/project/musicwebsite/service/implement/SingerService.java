@@ -116,4 +116,9 @@ public class SingerService implements ISingerService {
         }
         return users;
     }
+
+    @Override
+    public Long getTotalSinger() {
+        return singerRepository.count();
+    }
 }

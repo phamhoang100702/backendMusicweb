@@ -79,6 +79,27 @@ public class SongController {
 
     }
 
+    @PostMapping(path = "/playlist/{playlistId}/song/{songId}")
+    ResponseEntity<ResponseObject> addSongToPlaylist(@PathVariable Long playlistId,
+                                                     @PathVariable Long songId){
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.saveSongToPlaylist(songId,playlistId))
+        );
+
+    }
+
+    @DeleteMapping(path = "/playlist/{playlistId}/song/{songId}")
+    ResponseEntity<ResponseObject> removeSongFromPlaylist(@PathVariable Long playlistId,
+                                                     @PathVariable Long songId){
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.removeSongFromPlaylist(songId,playlistId))
+        );
+
+    }
 
 
 }

@@ -15,4 +15,6 @@ public interface IUserService {
 
     List<Singer> findFollowedSinger(Long id);
 
+    Long getTotalSong();
+
 }

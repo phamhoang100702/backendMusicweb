@@ -6,7 +6,7 @@ import project.musicwebsite.entity.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface IPUser {
+public interface IPUserService {
 
     UPremium switchPremium(User user);
 
@@ -18,4 +18,6 @@ public interface IPUser {
     UPremium update(Long id,UPremium uPremium);
 
     void delete(Long id);
+
+    Long getTotalUser();
 }

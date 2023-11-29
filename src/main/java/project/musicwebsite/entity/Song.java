@@ -14,14 +14,8 @@ import java.util.List;
 @Table(name = "Songtbl")
 public class Song extends AbstractModel {
     @Id
-    @SequenceGenerator(
-            name = "song_sequence",
-            sequenceName = "song_sequence",
-            allocationSize = 1 //increment by 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "song_sequence"
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
     @Column(nullable = false)
@@ -80,7 +74,6 @@ public class Song extends AbstractModel {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL,
             mappedBy = "songs"
     )
     @JsonIgnore

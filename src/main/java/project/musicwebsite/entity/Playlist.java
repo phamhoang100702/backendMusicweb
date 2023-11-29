@@ -21,24 +21,23 @@ public class Playlist extends  AbstractModel{
             allocationSize = 1 //increment by 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "playlist_sequence"
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
+    private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL,targetEntity = User.class)
+//    @Column(columnDefinition = "boolean default true")
+    private Boolean status;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            targetEntity = User.class
+    )
     @JoinColumn(name = "creatorId",nullable = false)
     private User creator;
 
-    private String name;
-
-    @Column(columnDefinition = "boolean default true")
-    private Boolean status;
-
-
     @ManyToMany(
-            cascade = CascadeType.REMOVE,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @JoinTable(
             name="SongPlaylisttbl",
@@ -69,4 +68,5 @@ public class Playlist extends  AbstractModel{
         this.status = status;
         this.songs = songs;
     }
+
 }

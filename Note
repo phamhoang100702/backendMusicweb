@@ -1,2 +1,36 @@
-Ngay 26/11
-    :xog Album voi song
+Hibernate: create table Albumtbl (id bigint identity not null, createdBy varchar(255), createdDate datetime2(6), modifiedBy varchar(255), modifiedDate datetime2(6), name varchar(255), publish datetime2(6), thumbnail varchar(255), primary key (id))
+Hibernate: create table Playlisttbl (id bigint identity not null, createdBy varchar(255), createdDate datetime2(6), modifiedBy varchar(255), modifiedDate datetime2(6), name varchar(255), status bit, primary key (id))
+Hibernate: create table PremiumPackagetbl (id bigint identity not null, createdBy varchar(255), createdDate datetime2(6), modifiedBy varchar(255), modifiedDate datetime2(6), cost float(53) not null, duration int not null, name varchar(255) not null, primary key (id))
+Hibernate: create table Songtbl (id bigint identity not null, createdBy varchar(255), createdDate datetime2(6), modifiedBy varchar(255), modifiedDate datetime2(6), category varchar(255), fileLyric varchar(255) not null, fileSong varchar(255) not null, name varchar(255) not null, status bit, primary key (id))
+Hibernate: create table Usertbl (role int not null, id bigint identity not null, createdBy varchar(255), createdDate datetime2(6), modifiedBy varchar(255), modifiedDate datetime2(6), email varchar(255) not null, name varchar(50) default 'User', password varchar(255) not null, address varchar(255), birth datetime2(6), phone varchar(255), status bit, bio varchar(255), socialMediaLink varchar(255), endTime datetime2(6), hobby varchar(255), startTime datetime2(6), primary key (id))
+Hibernate: alter table PremiumPackagetbl drop constraint if exists UK_p189grk3lm54yyy7yrx0dilyv
+Hibernate: alter table PremiumPackagetbl add constraint UK_p189grk3lm54yyy7yrx0dilyv unique (name)
+Hibernate: alter table Songtbl drop constraint if exists UK_4awcjh6xnak6fgxthg1v7aewa
+Hibernate: alter table Songtbl add constraint UK_4awcjh6xnak6fgxthg1v7aewa unique (fileLyric)
+Hibernate: alter table Songtbl drop constraint if exists UK_3jcln81lp8cftojb0lom5o91k
+Hibernate: alter table Songtbl add constraint UK_3jcln81lp8cftojb0lom5o91k unique (fileSong)
+Hibernate: alter table Usertbl drop constraint if exists UK_i2ww8uqaycuha6brclhn5v222
+Hibernate: alter table Usertbl add constraint UK_i2ww8uqaycuha6brclhn5v222 unique (email)
+
+
+Hibernate: alter table Albumtbl add singerId bigint
+Hibernate: create table Click (id bigint not null, timeClick datetime2(6), songId bigint, userId bigint not null, primary key (id))
+Hibernate: create table Followertbl (singer_id bigint not null, user_id bigint not null)
+Hibernate: alter table Playlisttbl add creatorId bigint not null
+Hibernate: create table Registertbl (package_id bigint not null, user_id bigint not null)
+Hibernate: create table SongPlaylisttbl (playlist_id bigint not null, song_id bigint not null)
+Hibernate: alter table Songtbl add albumId bigint
+Hibernate: alter table Songtbl add singerId bigint
+Hibernate: create sequence click_generator start with 1 increment by 1
+Hibernate: alter table Albumtbl add constraint FKg48wvoljbkh34rhwf89aa0itj foreign key (singerId) references Usertbl
+Hibernate: alter table Click add constraint FKegludh5wg55lw0cylg9y9mshg foreign key (songId) references Songtbl
+Hibernate: alter table Click add constraint FKtmm8eqi6ijuq9885h92eup2rl foreign key (userId) references Usertbl
+Hibernate: alter table Followertbl add constraint FKjr1a45bt2tyauoscgqfxl2msy foreign key (user_id) references Usertbl
+Hibernate: alter table Followertbl add constraint FKko9didp24e222w6u9wiw2e0n8 foreign key (singer_id) references Usertbl
+Hibernate: alter table Playlisttbl add constraint FKfkfrfcepint94s3lh6ffcalep foreign key (creatorId) references Usertbl
+Hibernate: alter table Registertbl add constraint FKngxtf6jaiwnbbf2hnusynjyqc foreign key (user_id) references Usertbl
+Hibernate: alter table Registertbl add constraint FKqu1xtwd0a672fjy8iue4pcr8m foreign key (package_id) references PremiumPackagetbl
+Hibernate: alter table SongPlaylisttbl add constraint FKrtqie7wg3p1aatgk2dp5rt75w foreign key (song_id) references Songtbl
+Hibernate: alter table SongPlaylisttbl add constraint FK6vshrxdlhkolpcb0ld9s4qpv foreign key (playlist_id) references Playlisttbl
+Hibernate: alter table Songtbl add constraint FK77rlk88i52m7tjnp0caaog4tc foreign key (albumId) references Albumtbl
+Hibernate: alter table Songtbl add constraint FKjrxtbmsap7g3wsq3syt3wr5h0 foreign key (singerId) references Usertbl
