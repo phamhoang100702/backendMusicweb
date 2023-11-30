@@ -27,29 +27,13 @@ public class PremiumPackage extends  AbstractModel{
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    @JoinTable(
-            name="Registertbl",
-            joinColumns = @JoinColumn(name="package_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id")
+            cascade = CascadeType.ALL,
+            mappedBy = "packages"
     )
     @JsonIgnore
     private List<UPremium> uPremiums = new LinkedList<>();
 
-    public void addUser(UPremium uPremium) {
-        this.uPremiums.add(uPremium);
-        uPremium.getPackages().add(this);
-    }
 
-    public void removeUser(UPremium uPremium){
-        this.uPremiums.remove(uPremium);
-        uPremium.getPackages().remove(this);
-    }
-
-    public boolean isExisted(UPremium uPremium){
-        return this.getUPremiums().contains(uPremium);
-    }
 
 
 

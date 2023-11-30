@@ -15,7 +15,7 @@ public class CensorController {
     CensorService censorService;
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> save(@PathVariable Censor censor) {
+    ResponseEntity<ResponseObject> save(@RequestBody Censor censor) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(

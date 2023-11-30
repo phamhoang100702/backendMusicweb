@@ -1,6 +1,7 @@
 package project.musicwebsite.service.i;
 
 import project.musicwebsite.entity.Singer;
+import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 
 import java.util.List;
@@ -16,5 +17,8 @@ public interface IUserService {
     List<Singer> findFollowedSinger(Long id);
 
     Long getTotalSong();
+    User switchToPremium(Long id);
+
+
 
 }

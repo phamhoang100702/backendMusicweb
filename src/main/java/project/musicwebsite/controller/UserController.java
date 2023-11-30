@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.ResponseObject;
 import project.musicwebsite.entity.Singer;
+import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.service.implement.UserService;
@@ -67,5 +68,11 @@ public class UserController {
         );
     }
 
+    @PostMapping("/{id}/premium")
+    ResponseEntity<ResponseObject> switchToPremium(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                new ResponseObject("Ok", "success", userService.switchToPremium(id))
+        );
+    }
 
 }

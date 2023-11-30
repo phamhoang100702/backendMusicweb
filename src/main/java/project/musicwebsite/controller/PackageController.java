@@ -56,7 +56,7 @@ public class PackageController {
         );
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("{id}")
     ResponseEntity<ResponseObject> deleteById(@PathVariable Long id) {
         packageService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(

@@ -29,4 +29,7 @@ public class Censor extends User {
         this.phone = phone;
         this.status = status;
     }
+    public Censor(String name,String email, String password){
+        super(name,email,password);
+    }
 }

@@ -3,9 +3,11 @@ package project.musicwebsite.service.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Singer;
+import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.repositories.PUserRepository;
 import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.UserRepository;
 import project.musicwebsite.service.i.IUserService;
@@ -22,6 +24,9 @@ public class UserService implements IUserService {
 
     @Autowired
     SingerRepository singerRepository;
+
+    @Autowired
+    PUserRepository pUserRepository;
 
     @Override
     public User save(User user) {
@@ -68,7 +73,7 @@ public class UserService implements IUserService {
     @Override
     public List<Singer> findFollowedSinger(Long id) {
         List<Long> list = userRepository.findFollowedSingerByUserId(id);
-        if (list.isEmpty()) throw new NotFoundException("YOU HAVEN'T FOLLOWED ANYONE YET ");
+        if (list.isEmpty()) throw new NotFoundException("You have not follow anyone yet");
         List<Singer> singers = new ArrayList<>();
         for (Long item : list) {
             singers.add(singerRepository.findById(item).get());
@@ -79,5 +84,16 @@ public class UserService implements IUserService {
     @Override
     public Long getTotalSong() {
         return userRepository.count();
+    }
+
+    @Override
+    public User switchToPremium(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty() || user.get().getRole()!=1) throw new NotFoundException("This user is not exist");
+        userRepository.switchToPremium(id,new Date());
+
+        return user.get();
+
+
     }
 }
