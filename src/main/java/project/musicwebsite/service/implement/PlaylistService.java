@@ -27,9 +27,9 @@ public class PlaylistService implements IPlaylistService {
     SongRepository songRepository;
 
     @Override
-    public Playlist save(Long userId,Playlist playlist) {
+    public Playlist save(Long userId, Playlist playlist) {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()) throw new NotFoundException("USER NOT EXISTED");
+        if (user.isEmpty()) throw new NotFoundException("USER NOT EXISTED");
         playlist.setCreator(user.get());
         return playlistRepository.save(playlist);
     }
@@ -37,30 +37,30 @@ public class PlaylistService implements IPlaylistService {
     @Override
     public Playlist findFavoritePlaylist(Long userId) {
         Optional<Playlist> playlist = playlistRepository.findFirstByUserId(userId);
-        if(playlist.isEmpty()) throw new NotFoundException("PLAYLIST NOT EXISTED");
+        if (playlist.isEmpty()) throw new NotFoundException("PLAYLIST NOT EXISTED");
         return playlist.get();
     }
 
     @Override
     public List<Playlist> getAllForUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()) throw new NotFoundException("USER NOT EXISTED");
+        if (user.isEmpty()) throw new NotFoundException("USER NOT EXISTED");
         List<Playlist> list = playlistRepository.findPlaylistByUserId(userId);
-        if(list.isEmpty()) throw new NoContentException("YOU DONT HAVE ANY PLAYLIST");
+        if (list.isEmpty()) throw new NoContentException("YOU DONT HAVE ANY PLAYLIST");
         return list;
     }
 
     @Override
     public List<Playlist> getAll() {
         List<Playlist> list = playlistRepository.findAll();
-        if(list.isEmpty()) throw new NoContentException("Dont have any playlist");
+        if (list.isEmpty()) throw new NoContentException("Dont have any playlist");
         return list;
     }
 
     @Override
     public Optional<Playlist> findById(Long id) {
         Optional<Playlist> playlist = playlistRepository.findById(id);
-        if(playlist.isEmpty()) throw new NotFoundException("Playlist not existed");
+        if (playlist.isEmpty()) throw new NotFoundException("Playlist not existed");
         return playlist;
     }
 
@@ -71,13 +71,13 @@ public class PlaylistService implements IPlaylistService {
                     playlist1.setName(playlist.getName());
                     playlist1.setStatus(playlist.getStatus());
                     return playlistRepository.save(playlist1);
-                }).orElseThrow(()->new NotFoundException("Playlist not existed"));
+                }).orElseThrow(() -> new NotFoundException("Playlist not existed"));
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(Long id) {
         Optional<Playlist> playlist = playlistRepository.findById(id);
-        if(playlist.isEmpty()) throw new NotFoundException("This playlist not existed");
+        if (playlist.isEmpty()) throw new NotFoundException("This playlist not existed");
         playlistRepository.deleteById(id);
     }
 
@@ -89,11 +89,11 @@ public class PlaylistService implements IPlaylistService {
     @Override
     public List<Song> getAllSongForPlaylist(Long id) {
         List<Long> list = playlistRepository.findAllSongPlaylist(id);
-        if(list.isEmpty()) throw new NoContentException("List empty");
+        if (list.isEmpty()) throw new NoContentException("List empty");
         List<Song> songs = new LinkedList<>();
-        for(Long id1 : list){
+        for (Long id1 : list) {
             Optional<Song> song = songRepository.findById(id);
-            if(song.isEmpty()) throw new NotFoundException("Song is not existed");
+            if (song.isEmpty()) throw new NotFoundException("Song is not existed");
             songs.add(song.get());
         }
         return songs;

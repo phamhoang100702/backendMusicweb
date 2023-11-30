@@ -121,10 +121,10 @@ public class AlbumService implements IAlbumService {
         List<Long> ids = songRepository.findSongsByAlbumId(albumId);
         for (Long id : ids) {
             if (songId == id) {
-                songRepository.findById(songId).map(song->{
+                songRepository.findById(songId).map(song -> {
                     song.setAlbum(null);
                     return songRepository.save(song);
-                }).orElseThrow(()-> new NotFoundException("SONG NOT EXISTED"));
+                }).orElseThrow(() -> new NotFoundException("SONG NOT EXISTED"));
                 return;
             }
         }

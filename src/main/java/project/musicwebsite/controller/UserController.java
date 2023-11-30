@@ -20,50 +20,50 @@ public class UserController {
     UserService userService;
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> save(@Valid @RequestBody User user){
+    ResponseEntity<ResponseObject> save(@Valid @RequestBody User user) {
         User user1 = userService.save(user);
         return ResponseEntity.ok(
-                new ResponseObject("Ok","Saving success",user1)
+                new ResponseObject("Ok", "Saving success", user1)
         );
     }
 
     @GetMapping("")
-    ResponseEntity<ResponseObject> getAll(){
+    ResponseEntity<ResponseObject> getAll() {
         List<User> list = userService.getAll();
         return ResponseEntity.ok(
-                new ResponseObject("Ok","Finding success",list)
+                new ResponseObject("Ok", "Finding success", list)
         );
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ResponseObject> findById(@PathVariable Long id){
+    ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         Optional<User> user1 = userService.findById(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok","Finding success",user1)
+                new ResponseObject("Ok", "Finding success", user1)
         );
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ResponseObject>  update(@PathVariable Long id,@Valid @RequestBody User user){
-        User user1 = userService.update(id,user);
+    ResponseEntity<ResponseObject> update(@PathVariable Long id, @Valid @RequestBody User user) {
+        User user1 = userService.update(id, user);
         return ResponseEntity.ok(
-                new ResponseObject("Ok","Updating success",user1)
+                new ResponseObject("Ok", "Updating success", user1)
         );
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseObject>  delete(@PathVariable Long id){
+    ResponseEntity<ResponseObject> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok","Delete success","")
+                new ResponseObject("Ok", "Delete success", "")
         );
     }
 
     @GetMapping("/{id}/singer")
-    ResponseEntity<ResponseObject> findSingerByUserId(@PathVariable Long id){
-        List<Singer>  singers = userService.findFollowedSinger(id);
+    ResponseEntity<ResponseObject> findSingerByUserId(@PathVariable Long id) {
+        List<Singer> singers = userService.findFollowedSinger(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok","success",singers)
+                new ResponseObject("Ok", "success", singers)
         );
     }
 

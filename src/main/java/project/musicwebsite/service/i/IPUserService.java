@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface IPUserService {
 
-    UPremium switchPremium(User user);
+    UPremium switchPremium(Long userId);
 
     UPremium save(UPremium uPremium);
 
@@ -20,4 +20,6 @@ public interface IPUserService {
     void delete(Long id);
 
     Long getTotalUser();
+
+    UPremium register(Long pUserId,Long packageId);
 }

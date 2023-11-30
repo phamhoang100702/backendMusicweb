@@ -8,8 +8,10 @@ import java.util.Optional;
 public interface ICensorService {
     Censor save(Censor censor);
     Optional<Censor> findById(Long id);
-    List<Censor> getList();
+    List<Censor> getAll();
     Censor update(Long id,Censor censor);
 
-    Censor delete(Long id);
+    void delete(Long id);
+
+    Long count();
 }

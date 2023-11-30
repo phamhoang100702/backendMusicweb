@@ -13,8 +13,9 @@ import project.musicwebsite.service.implement.PlaylistService;
 public class PlaylistController {
     @Autowired
     PlaylistService playlistService;
+
     @GetMapping("/playlist")
-    ResponseEntity<ResponseObject> getAll(){
+    ResponseEntity<ResponseObject> getAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
@@ -26,7 +27,7 @@ public class PlaylistController {
     }
 
     @GetMapping("user/{id}/playlist")
-    ResponseEntity<ResponseObject> getAllPlaylistByUserId(@PathVariable Long id){
+    ResponseEntity<ResponseObject> getAllPlaylistByUserId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
@@ -35,8 +36,9 @@ public class PlaylistController {
                 )
         );
     }
+
     @GetMapping("user/{id}/playlist/favorite")
-    ResponseEntity<ResponseObject> getFavoritePlaylist(@PathVariable Long id){
+    ResponseEntity<ResponseObject> getFavoritePlaylist(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
@@ -47,7 +49,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlist/{id}")
-    ResponseEntity<ResponseObject> findById(@PathVariable Long id){
+    ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
@@ -58,30 +60,30 @@ public class PlaylistController {
     }
 
     @PostMapping("/user/{id}/playlist")
-    ResponseEntity<ResponseObject> save(@PathVariable Long id, @RequestBody Playlist playlist){
+    ResponseEntity<ResponseObject> save(@PathVariable Long id, @RequestBody Playlist playlist) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
                         "SAVE SUCCESS",
-                        playlistService.save(id,playlist)
+                        playlistService.save(id, playlist)
                 )
         );
     }
 
     @PutMapping("/playlist/{id}")
     ResponseEntity<ResponseObject> updatePlaylist(@PathVariable Long id,
-                                                  @RequestBody Playlist playlist){
+                                                  @RequestBody Playlist playlist) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
                         "UPDATE SUCCESS",
-                        playlistService.update(id,playlist)
+                        playlistService.update(id, playlist)
                 )
         );
     }
 
     @DeleteMapping("/playlist/{id}")
-    ResponseEntity<ResponseObject> updatePlaylist(@PathVariable Long id){
+    ResponseEntity<ResponseObject> updatePlaylist(@PathVariable Long id) {
         playlistService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
@@ -91,8 +93,9 @@ public class PlaylistController {
                 )
         );
     }
+
     @GetMapping("/playlist/{id}/song")
-    ResponseEntity<ResponseObject> getAllSongFromAlbum(@PathVariable Long id){
+    ResponseEntity<ResponseObject> getAllSongFromAlbum(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseObject(
                         "ok",

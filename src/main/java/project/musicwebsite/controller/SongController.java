@@ -18,61 +18,61 @@ public class SongController {
     SongService songService;
 
     @PostMapping(path = "/singer/{singerId}/song")
-    ResponseEntity<ResponseObject> save(@PathVariable Long singerId,@RequestBody Song song){
-        Song song1 = songService.save(singerId,song);
+    ResponseEntity<ResponseObject> save(@PathVariable Long singerId, @RequestBody Song song) {
+        Song song1 = songService.save(singerId, song);
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","SUCCESS",song)
+                new ResponseObject("ok", "SUCCESS", song)
         );
     }
 
-    @GetMapping(path="/song/{id}")
-    ResponseEntity<ResponseObject> findById(@PathVariable Long id){
+    @GetMapping(path = "/song/{id}")
+    ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         Optional<Song> song = songService.findById(id);
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","SUCCESS",song)
+                new ResponseObject("ok", "SUCCESS", song)
         );
     }
 
     @GetMapping(path = "/song")
-    ResponseEntity<ResponseObject> getAll(){
-            return ResponseEntity.ok().body(
-                    new ResponseObject("ok", "SUCCESS", songService.getAll())
-            );
+    ResponseEntity<ResponseObject> getAll() {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "SUCCESS", songService.getAll())
+        );
 
     }
 
     @GetMapping(path = "/song?name={name}")
-    ResponseEntity<ResponseObject> searchByName(@PathVariable String name){
+    ResponseEntity<ResponseObject> searchByName(@PathVariable String name) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","SUCCESS",songService.searchByName(name))
+                new ResponseObject("ok", "SUCCESS", songService.searchByName(name))
         );
     }
 
     @PutMapping(path = "/song/{id}")
-    ResponseEntity<ResponseObject> update(@PathVariable Long id,@RequestBody Song song){
+    ResponseEntity<ResponseObject> update(@PathVariable Long id, @RequestBody Song song) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","SUCCESS",songService.update(id,song))
+                new ResponseObject("ok", "SUCCESS", songService.update(id, song))
         );
     }
 
-    @DeleteMapping(path="/song/{id}")
-    ResponseEntity<ResponseObject> deleteById(@PathVariable Long id){
+    @DeleteMapping(path = "/song/{id}")
+    ResponseEntity<ResponseObject> deleteById(@PathVariable Long id) {
         songService.delete(id);
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","Success","{}")
+                new ResponseObject("ok", "Success", "{}")
         );
     }
 
     @PostMapping(path = "/album/{albumId}/song/{songId}")
     ResponseEntity<ResponseObject> addSongToAlbum(@PathVariable Long albumId,
-                                                  @PathVariable Long songId){
+                                                  @PathVariable Long songId) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok","Success",songService.addSongToAlbum(albumId,songId))
+                new ResponseObject("ok", "Success", songService.addSongToAlbum(albumId, songId))
         );
     }
 
     @GetMapping(path = "/singer/{id}/song")
-    ResponseEntity<ResponseObject> getSongBySignerId(@PathVariable Long id){
+    ResponseEntity<ResponseObject> getSongBySignerId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok", "SUCCESS", songService.findSongBySingerId(id))
         );
@@ -81,22 +81,22 @@ public class SongController {
 
     @PostMapping(path = "/playlist/{playlistId}/song/{songId}")
     ResponseEntity<ResponseObject> addSongToPlaylist(@PathVariable Long playlistId,
-                                                     @PathVariable Long songId){
+                                                     @PathVariable Long songId) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.saveSongToPlaylist(songId,playlistId))
+                        songService.saveSongToPlaylist(songId, playlistId))
         );
 
     }
 
     @DeleteMapping(path = "/playlist/{playlistId}/song/{songId}")
     ResponseEntity<ResponseObject> removeSongFromPlaylist(@PathVariable Long playlistId,
-                                                     @PathVariable Long songId){
+                                                          @PathVariable Long songId) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.removeSongFromPlaylist(songId,playlistId))
+                        songService.removeSongFromPlaylist(songId, playlistId))
         );
 
     }

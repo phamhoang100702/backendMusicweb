@@ -82,7 +82,7 @@ public class SingerService implements ISingerService {
         Singer BSinger = singerRepository.findById(singerId).get();
         SingerMapper singerMapper = new SingerMapper();
 
-        return singerMapper.singerMapper(BSinger);
+        return SingerMapper.singerMapper(BSinger);
     }
 
     @Override
@@ -101,16 +101,16 @@ public class SingerService implements ISingerService {
         Singer BSinger1 = singerRepository.findById(singerId).get();
         SingerMapper singerMapper = new SingerMapper();
 
-        return singerMapper.singerMapper(BSinger1);
+        return SingerMapper.singerMapper(BSinger1);
 
     }
 
     @Override
     public List<User> findAllFollower(Long id) {
         List<Long> list = singerRepository.findFollowersBySingerId(id);
-        if(list.isEmpty()) throw new NotFoundException("YOU DONT HAVE ANY FOLLOWERS");
+        if (list.isEmpty()) throw new NotFoundException("YOU DONT HAVE ANY FOLLOWERS");
         List<User> users = new LinkedList<>();
-        for(Long item : list){
+        for (Long item : list) {
             Optional<User> user = userRepository.findById(item);
             users.add(user.get());
         }

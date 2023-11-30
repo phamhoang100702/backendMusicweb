@@ -17,7 +17,6 @@ import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.SongRepository;
 import project.musicwebsite.service.i.ISongService;
 
-import javax.swing.text.html.Option;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +32,7 @@ public class SongService implements ISongService {
 
     @Autowired
     PlaylistRepository playlistRepository;
+
     @Override
     public Song save(Long singerId, Song song) {
         Optional<Singer> singer = singerRepository.findById(singerId);
@@ -78,23 +78,23 @@ public class SongService implements ISongService {
     @Override
     public Playlist saveSongToPlaylist(Long songId, Long playlistId) {
         Optional<Song> song = songRepository.findById(songId);
-        if(song.isEmpty()) throw new NotFoundException("This song is not existed");
-        return  playlistRepository.findById(playlistId)
+        if (song.isEmpty()) throw new NotFoundException("This song is not existed");
+        return playlistRepository.findById(playlistId)
                 .map(playlist -> {
                     playlist.addSong(song.get());
                     return playlistRepository.save(playlist);
-                }).orElseThrow(()-> new NotFoundException("This playlist is not existed"));
+                }).orElseThrow(() -> new NotFoundException("This playlist is not existed"));
     }
 
     @Override
     public Playlist removeSongFromPlaylist(Long songId, Long playlistId) {
         Optional<Song> song = songRepository.findById(songId);
-        if(song.isEmpty()) throw new NotFoundException("This song is not existed");
+        if (song.isEmpty()) throw new NotFoundException("This song is not existed");
         return playlistRepository.findById(playlistId)
                 .map(playlist -> {
                     playlist.removeSong(song.get());
                     return playlistRepository.save(playlist);
-                }).orElseThrow(()->new NotFoundException("This playlist is not existed"));
+                }).orElseThrow(() -> new NotFoundException("This playlist is not existed"));
     }
 
 

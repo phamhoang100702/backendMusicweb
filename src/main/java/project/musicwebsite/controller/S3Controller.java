@@ -44,7 +44,7 @@ public class S3Controller {
     @GetMapping("/sounds/{fileName}")
     ResponseEntity<byte[]> getSound(@PathVariable String fileName) {
         try {
-            String path = "sounds/"+fileName;
+            String path = "sounds/" + fileName;
 
             byte[] bytes = s3Service.getObject(this.s3Bucket.getName(), path);
             return ResponseEntity.ok().body(

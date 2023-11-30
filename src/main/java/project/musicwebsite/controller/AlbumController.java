@@ -104,8 +104,8 @@ public class AlbumController {
     }
 
     @DeleteMapping("/album/{albumId}/song/{songId}")
-    ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long albumId,@PathVariable Long songId){
-        albumService.removeSongFromAlbum(albumId,songId);
+    ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long albumId, @PathVariable Long songId) {
+        albumService.removeSongFromAlbum(albumId, songId);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "OK",

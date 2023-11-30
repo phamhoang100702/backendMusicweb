@@ -47,13 +47,13 @@ public class PackageService implements IPackageService {
                     premiumPackage1.setDuration(premiumPackage.getDuration());
                     premiumPackage1.setModifiedDate(new Date());
                     return packageRepository.save(premiumPackage1);
-                }).orElseThrow(()->new NotFoundException("This package is not exist"));
+                }).orElseThrow(() -> new NotFoundException("This package is not exist"));
     }
 
     @Override
     public void delete(Long packageId) {
         Optional<PremiumPackage> premiumPackage = packageRepository.findById(packageId);
-        if(premiumPackage.isEmpty()) throw new NotFoundException("This package is not exist");
+        if (premiumPackage.isEmpty()) throw new NotFoundException("This package is not exist");
         packageRepository.deleteById(packageId);
     }
 
