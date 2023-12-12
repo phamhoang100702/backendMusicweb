@@ -1,5 +1,6 @@
 package project.musicwebsite.s3;
 
+import lombok.Data;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

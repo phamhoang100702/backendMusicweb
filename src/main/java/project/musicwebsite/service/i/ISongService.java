@@ -23,4 +23,6 @@ public interface ISongService {
     void delete(Long id);
 
     Long getTotalSong();
+
+
 }

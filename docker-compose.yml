@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  app:
+    image: 'api'
+    build:
+      context: .
+    container_name: app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://sqlserver:1433;database=musicwebsite;encrypt=false
+      - SPRING_DATASOURCE_USERNAME:sa
+      - SPRING_DATASOURCE_PASSWORD:Phanletruyen123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - 9000:9000
+    networks:
+      - network
+  sqlserver:
+    image: 'mcr.microsoft.com/mssql/server:latest'
+    volumes:
+      - musicdb:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA:Y
+      - MSSQL_SA_PASSWORD:Phanletruyen123
+    ports:
+      - "1433:1433"
+    networks:
+      - network
+volumes:
+  musicdb:
+networks:
+  network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1

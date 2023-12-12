@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;database=musicwebsite;encrypt=false
+    url: jdbc:sqlserver://0.0.0.0:1433;database=musicwebsite;encrypt=false
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     username: sa
     password: Phanletruyen123

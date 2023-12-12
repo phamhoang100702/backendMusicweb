@@ -26,7 +26,12 @@ public class Song extends AbstractModel {
     private String fileSong;
     @Column(nullable = false, unique = true)
     private String fileLyric;
+
     private String category;
+
+    @Column(nullable = true)
+    @JsonIgnore
+    private String avartar;
 
     public boolean getStatus() {
         return this.status;
@@ -49,8 +54,6 @@ public class Song extends AbstractModel {
         this.fileSong = fileSong;
         this.fileLyric = fileLyric;
     }
-
-
     @ManyToOne(
             fetch = FetchType.LAZY
     )
@@ -60,10 +63,6 @@ public class Song extends AbstractModel {
     )
     @JsonIgnore
     private Album album;
-
-
-
-
     @ManyToOne(
             fetch = FetchType.EAGER
     )
@@ -78,8 +77,4 @@ public class Song extends AbstractModel {
     )
     @JsonIgnore
     private List<Playlist> playlist = new LinkedList<>();
-
-
-
-
 }

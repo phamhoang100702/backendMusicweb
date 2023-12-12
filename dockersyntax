@@ -3,4 +3,8 @@ docker restart app
 docker rmi image
 - docker build
 docker build -t name .
-- docker 
+- docker
+
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Phanletruyen123"  -p 1433:1433 -v musicdb:/var/opt/mssql -d mcr.microsoft.com/mssql/server:latest
+
+\\wsl$\docker-desktop-data\data\docker\volumes

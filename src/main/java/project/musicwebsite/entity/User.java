@@ -43,6 +43,9 @@ public class User extends AbstractModel {
     @JsonIgnore
     private int role;
 
+    @JsonIgnore
+    private String avatar;
+
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade =  CascadeType.ALL,
