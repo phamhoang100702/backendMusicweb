@@ -3,6 +3,7 @@ package project.musicwebsite.service.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.PremiumPackage;
+import project.musicwebsite.entity.Role;
 import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
@@ -10,6 +11,7 @@ import project.musicwebsite.exception.NoContentException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.repositories.PUserRepository;
 import project.musicwebsite.repositories.PackageRepository;
+import project.musicwebsite.repositories.RoleRepository;
 import project.musicwebsite.repositories.UserRepository;
 import project.musicwebsite.service.i.IPUserService;
 
@@ -26,6 +28,8 @@ public class PUserService implements IPUserService {
     PUserRepository pUserRepository;
     @Autowired
     PackageRepository packageRepository;
+    @Autowired
+    RoleRepository roleRepository;
 //    @Autowired
 //    EntityManager entityManager;
 
@@ -33,9 +37,14 @@ public class PUserService implements IPUserService {
     public User switchToNormalUser(Long userId) {
         Optional<UPremium> premium = pUserRepository.findById(userId);
         if (premium.isEmpty()) throw new NotFoundException("This user is not exist");
+
+        premium.map(premium1->{
+            Role role = roleRepository.findByName("PREMIUM").get();
+            premium1.removeRole(role);
+            return  pUserRepository.save(premium1);
+        });
         pUserRepository.switchToNormalUser(userId);
         pUserRepository.deleteAllRegisterByUserId(userId);
-//        entityManager.clear();
         return userRepository.findById(userId).get();
     }
 

@@ -17,6 +17,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findByRole(int i);
     Optional<User> findByEmail(String email);
 
+    Boolean existsUsersByEmail(String email);
+
     @Query(
             value = "select followers.singer_id from Followertbl followers  where followers.user_id=?1",
             nativeQuery = true

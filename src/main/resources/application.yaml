@@ -26,3 +26,7 @@ aws:
 
 server:
   port: 9000
+security:
+  jwt:
+    secret-key: verysecretkeyohsosecretdamnhowlongisthispleasedontusethisinproduction
+    token-duration: 1D

@@ -17,7 +17,7 @@ import java.util.List;
 public class JwtIssuer {
     @Autowired
     private final JwtProperties jwtProperties;
-    private String issue(Request request){
+    public String issue(Request request){
         var now = Instant.now();
         return JWT.create()
                 .withSubject(String.valueOf(request.userid))

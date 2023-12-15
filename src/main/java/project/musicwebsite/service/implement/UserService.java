@@ -2,12 +2,14 @@ package project.musicwebsite.service.implement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project.musicwebsite.entity.Role;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.repositories.PUserRepository;
+import project.musicwebsite.repositories.RoleRepository;
 import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.UserRepository;
 import project.musicwebsite.service.i.IUserService;
@@ -27,6 +29,8 @@ public class UserService implements IUserService {
 
     @Autowired
     PUserRepository pUserRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public User save(User user) {
@@ -91,6 +95,11 @@ public class UserService implements IUserService {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty() || user.get().getRole()!=1) throw new NotFoundException("This user is not exist");
         userRepository.switchToPremium(id,new Date());
+        user.map(user1 -> {
+            Role role = roleRepository.findByName("PREMIUM").get();
+            user1.addRole(role);
+            return user1;
+        });
 
         return user.get();
 

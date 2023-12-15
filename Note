@@ -36,3 +36,12 @@ Hibernate: alter table Songtbl add constraint FK77rlk88i52m7tjnp0caaog4tc foreig
 Hibernate: alter table Songtbl add constraint FKjrxtbmsap7g3wsq3syt3wr5h0 foreign key (singerId) references Usertbl
 Hibernate: alter table Songtbl add avartar varchar(255)
 Hibernate: alter table Usertbl add avatar varchar(255)
+
+Hibernate: alter table Role add createdBy varchar(255)
+Hibernate: alter table Role add createdDate datetime2(6)
+Hibernate: alter table Role add modifiedBy varchar(255)
+Hibernate: alter table Role add modifiedDate datetime2(6)
+Hibernate: create table user_role (user_id bigint not null, role_id bigint not null)
+Hibernate: alter table Usertbl alter column role int
+Hibernate: alter table user_role add constraint FK7ir6hi5jr98lclgjgbyxafneu foreign key (role_id) references Role
+Hibernate: alter table user_role add constraint FKq78fvvyhpk460tqxd12qi92fs foreign key (user_id) references Usertbl

@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project.musicwebsite.exception.BadRequestException;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +44,18 @@ public class User extends AbstractModel {
     @Column(insertable = false, updatable = false)
     @JsonIgnore
     private int role;
+
+
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    @JsonIgnore
+    private List<Role> roles = new ArrayList<>();
 
     @JsonIgnore
     private String avatar;
@@ -80,5 +94,17 @@ public class User extends AbstractModel {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), id, email);
+    }
+
+    public void addRole(Role role){
+        if(this.roles.contains(role)) throw  new BadRequestException("Role is existed");
+        this.roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole(Role role){
+        if(!this.roles.contains(role)) throw new BadRequestException("Role is not existed");
+        this.roles.remove(role);
+        role.getUsers().remove(this);
     }
 }
