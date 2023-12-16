@@ -1,9 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://0.0.0.0:1433;database=musicwebsite;encrypt=false
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username: sa
-    password: Phanletruyen123
+    url: jdbc:postgresql://localhost:4433/musicdb
+    username: postgres
+    password: 0795225130
     generate-unique-name: false
   servlet:
     multipart:
@@ -16,6 +15,9 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 aws:
   region: ap-east-1
   accessKey: AKIATMN2MSYEUJKMIIB2

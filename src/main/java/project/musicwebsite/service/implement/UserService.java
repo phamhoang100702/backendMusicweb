@@ -94,12 +94,13 @@ public class UserService implements IUserService {
     public User switchToPremium(Long id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty() || user.get().getRole()!=1) throw new NotFoundException("This user is not exist");
-        userRepository.switchToPremium(id,new Date());
         user.map(user1 -> {
             Role role = roleRepository.findByName("PREMIUM").get();
             user1.addRole(role);
-            return user1;
+            return userRepository.save(user1);
         });
+        userRepository.switchToPremium(id,new Date());
+
 
         return user.get();
 

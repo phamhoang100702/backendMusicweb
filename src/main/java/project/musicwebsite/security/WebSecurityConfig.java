@@ -43,12 +43,12 @@ public class WebSecurityConfig {
                 .exceptionHandling(h->h.authenticationEntryPoint(unauthorizedHandler))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry->registry
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/singer/**").hasAnyAuthority("SINGER","ADMIN","CENSOR")
-                        .requestMatchers("/api/v1/user/**").hasAnyAuthority("USER","CENSOR","ADMIN")
-                        .requestMatchers("/api/v1/singer/{id1}/user/{id2}").hasAnyAuthority("USER","ADMIN")
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/v1/singer/**").hasAnyAuthority("SINGER","ADMIN","CENSOR")
+//                        .requestMatchers("/api/v1/user/**").hasAnyAuthority("USER","CENSOR","ADMIN")
+//                        .requestMatchers("/api/v1/singer/{id1}/user/{id2}").hasAnyAuthority("USER","ADMIN")
+//                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();
