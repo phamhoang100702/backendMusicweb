@@ -15,7 +15,7 @@ public class HandleFile {
     public HandleFile() {
     }
 
-    private boolean isImageFile(MultipartFile file) {
+    private boolean isSoundFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         System.out.println("extension " + fileExtension);
         return Arrays.asList(new String[]{"mp3"})
@@ -26,7 +26,7 @@ public class HandleFile {
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }
-        if (!isImageFile(file)) {
+        if (!isSoundFile(file)) {
             throw new RuntimeException("You can only upload sound image");
         }
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -39,11 +39,31 @@ public class HandleFile {
 
     private boolean isLyricFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-        return Arrays.asList(new String[]{"jpg"})
+        return Arrays.asList(new String[]{"lrc"})
                 .contains(fileExtension.trim().toLowerCase());
     }
 
     public String storeLyricsFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new RuntimeException("Failed to store empty file");
+        }
+        if (!isLyricFile(file)) {
+            throw new RuntimeException("You can only upload file lyrics");
+        }
+        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String generatedFile = UUID.randomUUID().toString().replace("-", "");
+        generatedFile += "." + fileExtension;
+        return   generatedFile;
+
+    }
+
+    private boolean isImageFile(MultipartFile file) {
+        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+        return Arrays.asList(new String[]{"jpeg","png","bmp","jpg"})
+                .contains(fileExtension.trim().toLowerCase());
+    }
+
+    public String storeFileImages(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }

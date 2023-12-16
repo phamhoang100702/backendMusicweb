@@ -1,6 +1,7 @@
 package project.musicwebsite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import project.musicwebsite.s3.S3Service;
 
 @RestController
 @RequestMapping(path = "/api/v1/s3")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+//@CrossOrigin(origins = "http://127.0.0.1    :5500")
 public class S3Controller {
     @Autowired
     S3Service s3Service;
@@ -25,23 +26,38 @@ public class S3Controller {
     @Autowired
     HandleFile handleFile;
 
-    @PostMapping(value = "/sounds", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
+
+
+    @PostMapping(value = "/sound", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ResponseObject> upSound(@RequestParam("file") MultipartFile file) {
-        System.out.println("okss");
 
         String name = handleFile.storeSoundFile(file);
-        String path = "sounds/" + name;
+        String pathSong = "song/sounds/" + name;
+        String url = path + pathSong;
         try {
-            s3Service.putObject(this.s3Bucket.getName(), path, file.getBytes());
+            s3Service.putObject(this.s3Bucket.getName(), pathSong, file.getBytes());
+
             return ResponseEntity.ok().body(
-                    new ResponseObject("Ok", "success", name)
+                    new ResponseObject("Ok", "success", url)
             );
         } catch (Exception e) {
             throw new FileUploadIoException("File is not acceptable");
         }
     }
 
-    @GetMapping("/sounds/{fileName}")
+    @DeleteMapping(value = "/{deleteFile}")
+    ResponseEntity<ResponseObject> deleteFile(@PathVariable String deleteFile) {
+        s3Service.delete(s3Bucket.getName(),deleteFile);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ResponseObject("Delete Success","Ok","")
+                );
+
+    }
+
+    @GetMapping("/sound/{fileName}")
     ResponseEntity<byte[]> getSound(@PathVariable String fileName) {
         try {
             String path = "sounds/" + fileName;
@@ -55,21 +71,22 @@ public class S3Controller {
         }
     }
 
-    @PostMapping("/lyrics")
+    @PostMapping("/lyric")
     ResponseEntity<ResponseObject> upLyric(@RequestParam("file") MultipartFile file) {
         String name = handleFile.storeLyricsFile(file);
-        String path = "lyrics/" + name;
+        String pathLyrics = "song/lyrics/" + name;
+        String url = path+pathLyrics;
         try {
             s3Service.putObject(this.s3Bucket.getName(), path, file.getBytes());
             return ResponseEntity.ok().body(
-                    new ResponseObject("Ok", "success", path)
+                    new ResponseObject("Ok", "success", url)
             );
         } catch (Exception e) {
             throw new FileUploadIoException("File is not acceptable");
         }
     }
 
-    @GetMapping("/lyrics/{fileName}")
+    @GetMapping("/lyric/{fileName}")
     ResponseEntity<ResponseObject> getLyric(@PathVariable String fileName) {
         try {
             byte[] bytes = s3Service.getObject(this.s3Bucket.getName(), fileName);
@@ -78,6 +95,21 @@ public class S3Controller {
             );
         } catch (Exception e) {
             throw new NotFoundException("THIS FILE NOT EXISTED");
+        }
+    }
+
+    @PostMapping("/image")
+    ResponseEntity<ResponseObject> upImages(@RequestParam("file") MultipartFile file) {
+        String name = handleFile.storeFileImages(file);
+        String pathImages = "Image/" + name;
+        String url = path+pathImages;
+        try {
+            s3Service.putObject(this.s3Bucket.getName(), pathImages, file.getBytes());
+            return ResponseEntity.ok().body(
+                    new ResponseObject("Ok", "success", url)
+            );
+        } catch (Exception e) {
+            throw new FileUploadIoException("File is not acceptable");
         }
     }
 

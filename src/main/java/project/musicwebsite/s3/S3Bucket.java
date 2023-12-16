@@ -12,6 +12,4 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class S3Bucket {
     private String name;
-
-
 }

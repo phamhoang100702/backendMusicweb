@@ -24,7 +24,7 @@ aws:
   secretKey: L0TPNijqpCARKnlWBzDovpWk4IAmXt3Z6g3bA12C
   s3:
     bucket:
-      name: musing-test
+      name: musicwebsite
 
 server:
   port: 9000
