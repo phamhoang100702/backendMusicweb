@@ -1,8 +1,6 @@
 package project.musicwebsite.service.i;
 
-import project.musicwebsite.entity.Album;
-import project.musicwebsite.entity.Playlist;
-import project.musicwebsite.entity.Song;
+import project.musicwebsite.entity.*;
 import project.musicwebsite.model.dto.SongDTO;
 
 import java.util.List;
@@ -24,5 +22,13 @@ public interface ISongService {
 
     Long getTotalSong();
 
+    Song saveSingersToSong(Long songId, List<Singer> singers);
+    Song removeSingerFromSong(Long songId, List<Singer> singers);
 
+
+    Song addCategoryToSong(Long songId, List<Category> categories);
+
+    Song removeCategoryToSong(Long songId, List<Category> categories);
+
+    Song save(Song song);
 }

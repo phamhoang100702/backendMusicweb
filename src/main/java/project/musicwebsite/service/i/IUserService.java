@@ -3,7 +3,9 @@ package project.musicwebsite.service.i;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
+import project.musicwebsite.model.dto.UserDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,9 @@ public interface IUserService {
 
     Long getTotalSong();
     User switchToPremium(Long id);
+
+    List<User> saveListUser(ArrayList<User> users);
+
 
 
 

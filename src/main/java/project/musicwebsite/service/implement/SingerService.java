@@ -121,4 +121,9 @@ public class SingerService implements ISingerService {
     public Long getTotalSinger() {
         return singerRepository.count();
     }
+
+
+    public List<Singer> addPatch(List<Singer> singers){
+        return singerRepository.saveAll(singers);
+    }
 }

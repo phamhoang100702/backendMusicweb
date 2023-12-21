@@ -32,6 +32,4 @@ public interface UserRepository extends JpaRepository<User,Long> {
             nativeQuery = true
     )
     void switchToPremium(Long id, Date date);
-
-
 }

@@ -11,6 +11,14 @@ public class UserMapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        String role = "";
+        if(user.getRole()==1){
+            role = "normal";
+        }
+        else {
+            role = "premium";
+        }
+        userDTO.setRole(role);
         return userDTO;
     }
 

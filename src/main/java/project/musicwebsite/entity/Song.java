@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project.musicwebsite.exception.BadRequestException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "Songtbl")
+// Song SInger ver dang n-n
 public class Song extends AbstractModel {
     @Id
     @GeneratedValue(
@@ -22,12 +24,20 @@ public class Song extends AbstractModel {
     private String name;
     @Column(columnDefinition = "boolean default false")
     private Boolean status;
-    @Column(nullable = false, unique = true)
-    private String fileSong;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
+    private String fileSound;
+    @Column(nullable = false, unique = false)
     private String fileLyric;
 
-    private String category;
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "song_category",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name="category_id")
+    )
+    private List<Category> categories = new LinkedList<>();
 
     @Column(nullable = true)
     @JsonIgnore
@@ -42,16 +52,16 @@ public class Song extends AbstractModel {
         super(createdBy, modifiedBy);
         this.name = name;
         this.status = status;
-        this.fileSong = fileSong;
+        this.fileSound = fileSong;
         this.fileLyric = fileLyric;
-        this.singer = BSinger;
+        this.creator = BSinger;
     }
 
     public Song(String name, boolean status, String fileSong, String fileLyric) {
         super();
         this.name = name;
         this.status = status;
-        this.fileSong = fileSong;
+        this.fileSound = fileSong;
         this.fileLyric = fileLyric;
     }
     @ManyToOne(
@@ -66,9 +76,21 @@ public class Song extends AbstractModel {
     @ManyToOne(
             fetch = FetchType.EAGER
     )
-    @JoinColumn(name = "singerId", nullable = true)
+    @JoinColumn(name = "creatorId", nullable = true)
+    @JsonIgnore
+    private User creator;
 
-    private Singer singer;
+
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "song_singer",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name = "singer_id")
+    )
+    @JoinColumn(nullable = true)
+    private List<Singer> singers = new LinkedList<>();
 
 
     @ManyToMany(
@@ -77,4 +99,29 @@ public class Song extends AbstractModel {
     )
     @JsonIgnore
     private List<Playlist> playlist = new LinkedList<>();
+
+    public void addSinger(Singer singer){
+        if(singers.contains(singer)) throw new BadRequestException("This singer is existed");
+        this.singers.add(singer);
+        singer.getSongs().add(this);
+    }
+
+    public void removeSinger(Singer singer){
+        if(!singers.contains(singer)) throw new BadRequestException("This singer is not existed");
+        this.singers.remove(singer);
+        singer.getSongs().remove(this);
+    }
+
+    public void addCategory(Category category){
+        if(this.categories.contains(category)) throw  new BadRequestException("This category is exited");
+        this.categories.add(category);
+        category.getSongList().add(this);
+    }
+
+    public void removeCategory(Category category){
+        if(!this.categories.contains(category)) throw  new BadRequestException("This category is not exited");
+        this.categories.remove(category);
+        category.getSongList().remove(this);
+    }
+
 }

@@ -28,6 +28,34 @@ public class S3Controller {
 
     final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
 
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<ResponseObject> upFile( @RequestParam(name = "sound")  MultipartFile sound,
+                                          @RequestParam(name = "lyric") MultipartFile lyric,
+                                          @RequestParam( name= "avatar") MultipartFile avatar ) {
+
+        String name = handleFile.generatedName();
+        String soundExtension = handleFile.fileExtension(sound);
+        String lyricExtension = handleFile.fileExtension(lyric);
+        String avatarExtension = handleFile.fileExtension(avatar);
+        String songFile = "song/sounds/" + name + "." + soundExtension;
+        String lyricFile = "song/lyrics/" + name +"." + lyricExtension;
+        String avatarFile = "song/image/" + name+"." + avatarExtension;
+
+        String url1 = path + songFile;
+        String url2 = path + lyricFile;
+        String url3 = path + avatarFile;
+        String[] url = {url1,url2,url3};
+        try {
+            s3Service.putObject(this.s3Bucket.getName(), songFile, sound.getBytes());
+            s3Service.putObject(this.s3Bucket.getName(), lyricFile, lyric.getBytes());
+            s3Service.putObject(this.s3Bucket.getName(), avatarFile, avatar.getBytes());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("Ok", "success", url)
+            );
+        } catch (Exception e) {
+            throw new FileUploadIoException("File is not acceptable");
+        }
+    }
 
     @PostMapping(value = "/sound", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ResponseObject> upSound(@RequestParam("file") MultipartFile file) {

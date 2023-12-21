@@ -18,6 +18,9 @@ public class Singer extends User {
 
     private String socialMediaLink;
 
+    @JoinColumn(nullable = true)
+    private String nickName;
+
     public Singer(String createdBy, String modifiedBy, String name,
                   String email, String password, String bio, String socialMediaLink) {
         super(createdBy, modifiedBy, name, email, password);
@@ -43,6 +46,13 @@ public class Singer extends User {
     @JsonIgnore
     private List<User> followers = new LinkedList<>();
 
+    @ManyToMany(
+            mappedBy = "singers",
+            fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private List<Song> songs = new LinkedList<>();
+
     public void addFollower(User user) {
         this.followers.add(user);
         user.getSingers().add(this);
@@ -57,14 +67,6 @@ public class Singer extends User {
     public boolean existFollower(User user) {
         return this.followers.contains(user);
     }
-
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "singer"
-    )
-    @JsonIgnore
-    private List<Song> songs = new LinkedList<>();
 
     @OneToMany(
             fetch = FetchType.LAZY,

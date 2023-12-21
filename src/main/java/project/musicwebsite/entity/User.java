@@ -42,7 +42,7 @@ public class User extends AbstractModel {
     private String password;
 
     @Column(insertable = false, updatable = false)
-    @JsonIgnore
+
     private int role;
 
 
@@ -67,6 +67,14 @@ public class User extends AbstractModel {
     )
     @JsonIgnore
     private List<Singer> singers = new LinkedList<>();
+
+    @OneToMany(
+            mappedBy = "creator",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private List<Song> songs;
 
     public User(String createdBy, String modifiedBy, String name, String email, String password) {
         super(createdBy, modifiedBy);

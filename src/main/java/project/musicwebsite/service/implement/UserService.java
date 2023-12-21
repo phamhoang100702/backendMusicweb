@@ -1,6 +1,7 @@
 package project.musicwebsite.service.implement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Role;
 import project.musicwebsite.entity.Singer;
@@ -8,6 +9,8 @@ import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.model.dto.UserDTO;
+import project.musicwebsite.model.mapper.UserMapper;
 import project.musicwebsite.repositories.PUserRepository;
 import project.musicwebsite.repositories.RoleRepository;
 import project.musicwebsite.repositories.SingerRepository;
@@ -31,12 +34,18 @@ public class UserService implements IUserService {
     PUserRepository pUserRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     @Override
     public User save(User user) {
+        String password = passwordEncoder.encode(user.getPassword());
+        user.setPassword(password);
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if (userOptional.isPresent()) throw new BadRequestException("Email existed");
-        return userRepository.save(user);
+        User user1 = userRepository.save(user);
+        return user1;
     }
 
     @Override
@@ -51,7 +60,7 @@ public class UserService implements IUserService {
     public List<User> getAll() {
         List<User> list = userRepository.findByRole(1);
         if (list.isEmpty()) throw new NotFoundException("Do not have any users");
-        return list;
+        return (list);
     }
 
     @Override
@@ -100,10 +109,16 @@ public class UserService implements IUserService {
             return userRepository.save(user1);
         });
         userRepository.switchToPremium(id,new Date());
-
-
         return user.get();
+    }
 
-
+    @Override
+    public List<User> saveListUser(ArrayList<User> users) {
+        List<User> list = new ArrayList<>();
+        for(User user :  users){
+            User u1 = save(user);
+            list.add(u1);
+        }
+        return list;
     }
 }

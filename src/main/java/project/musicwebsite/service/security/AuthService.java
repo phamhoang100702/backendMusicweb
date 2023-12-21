@@ -1,27 +1,20 @@
 package project.musicwebsite.service.security;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.musicwebsite.entity.Censor;
-import project.musicwebsite.entity.Role;
-import project.musicwebsite.entity.Singer;
-import project.musicwebsite.entity.User;
+import project.musicwebsite.entity.*;
 import project.musicwebsite.exception.BadRequestException;
+import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.LoginDTO;
-import project.musicwebsite.repositories.CensorRepository;
-import project.musicwebsite.repositories.RoleRepository;
-import project.musicwebsite.repositories.SingerRepository;
-import project.musicwebsite.repositories.UserRepository;
+import project.musicwebsite.repositories.*;
 import project.musicwebsite.security.UserPrincipal;
 import project.musicwebsite.security.jwt.JwtIssuer;
-import project.musicwebsite.service.implement.UserService;
 
 @Service
 public class AuthService {
@@ -32,12 +25,14 @@ public class AuthService {
     private RoleRepository roleRepository;
     private SingerRepository singerRepository;
     private CensorRepository censorRepository;
+    private AdminRepository adminRepository;
 
     @Autowired
     public AuthService(JwtIssuer jwtIssuer, AuthenticationManager authenticationManager,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder, RoleRepository roleRepository,
-                       SingerRepository singerRepository, CensorRepository censorRepository) {
+                       SingerRepository singerRepository, CensorRepository censorRepository,
+                       AdminRepository adminRepository) {
         this.jwtIssuer = jwtIssuer;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -45,9 +40,37 @@ public class AuthService {
         this.roleRepository = roleRepository;
         this.singerRepository = singerRepository;
         this.censorRepository = censorRepository;
+        this.adminRepository = adminRepository;
     }
 
-    public LoginDTO attemptLogin(String email, String password){
+    public LoginDTO adminLogin(String email, String password) {
+        try {
+            User user = userRepository.findByEmail(email).orElseThrow(
+                    ()->new NotFoundException("This account is not existed")
+            );
+            if(user.getRole()!=0) throw new BadRequestException("You dont have permission");
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+            var principal = (UserPrincipal) authentication.getPrincipal();
+            var token = jwtIssuer.issue(JwtIssuer.Request.builder()
+                    .userid(principal.getId())
+                    .email(principal.getUsername())
+                    .roles(principal.getAuthorities().stream().map(
+                            GrantedAuthority::getAuthority
+                    ).toList()
+                    )
+                    .build()
+            );
+            return LoginDTO.builder()
+                    .token(token)
+                    .build();
+        }catch (Exception e){
+            throw new BadRequestException("Wrong username or password");
+        }
+    }
+
+    public LoginDTO attemptLogin(String email, String password) {
         try {
             var authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
@@ -64,13 +87,13 @@ public class AuthService {
             return LoginDTO.builder()
                     .token(token)
                     .build();
-        }catch (Exception e){
-            throw  new BadRequestException("Wrong username or password");
+        } catch (Exception e) {
+            throw new BadRequestException("Wrong username or password");
         }
     }
 
-    public User userRegister(User user){
-        if(userRepository.existsUsersByEmail(user.getEmail())){
+    public User userRegister(User user) {
+        if (userRepository.existsUsersByEmail(user.getEmail())) {
             throw new BadRequestException("User is existed");
         }
 
@@ -82,8 +105,21 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Singer singerRegister(Singer singer){
-        if(userRepository.existsUsersByEmail(singer.getEmail())){
+    public Admin adminRegister(Admin admin) {
+        if (userRepository.existsUsersByEmail(admin.getEmail())) {
+            throw new BadRequestException("User is existed");
+        }
+
+        String password = passwordEncoder.encode(admin.getPassword());
+        admin.setPassword(password);
+        Role role = roleRepository.findByName("ADMIN").get();
+        admin.addRole(role);
+
+        return adminRepository.save(admin);
+    }
+
+    public Singer singerRegister(Singer singer) {
+        if (userRepository.existsUsersByEmail(singer.getEmail())) {
             throw new BadRequestException("User is existed");
         }
 
@@ -97,8 +133,8 @@ public class AuthService {
         return singerRepository.save(singer);
     }
 
-    public User censorRegister(Censor censor){
-        if(userRepository.existsUsersByEmail(censor.getEmail())){
+    public User censorRegister(Censor censor) {
+        if (userRepository.existsUsersByEmail(censor.getEmail())) {
             throw new BadRequestException("User is existed");
         }
 
@@ -111,4 +147,6 @@ public class AuthService {
 
         return censorRepository.save(censor);
     }
+
+
 }

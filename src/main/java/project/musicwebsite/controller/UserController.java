@@ -11,6 +11,8 @@ import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.service.implement.UserService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +74,13 @@ public class UserController {
     ResponseEntity<ResponseObject> switchToPremium(@PathVariable Long id) {
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "success", userService.switchToPremium(id))
+        );
+    }
+
+    @PostMapping("/patch")
+        ResponseEntity<ResponseObject> saveListUser(@RequestBody ArrayList<User> list) {
+        return ResponseEntity.ok(
+                new ResponseObject("Ok", "success", userService.saveListUser(list))
         );
     }
 

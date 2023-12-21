@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import project.musicwebsite.entity.Album;
+import project.musicwebsite.entity.Category;
 import project.musicwebsite.entity.Singer;
+
+import java.util.List;
+import java.util.ListIterator;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +19,5 @@ public class SongDTO {
     private boolean status;
     private String fileSong;
     private String fileLyric;
-    private String category;
+    private List<Category> categories;
 }

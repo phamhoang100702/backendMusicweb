@@ -15,8 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import project.musicwebsite.exception.UnauthorizedHandler;
 import project.musicwebsite.service.security.UserDetailServiceImp;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -38,8 +45,9 @@ public class WebSecurityConfig {
         httpSecurity
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(h->h.authenticationEntryPoint(unauthorizedHandler))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry->registry
@@ -52,6 +60,17 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsMvcConfigurer(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+                WebMvcConfigurer.super.addCorsMappings(registry);
+            }
+        };
     }
 
 

@@ -1,14 +1,18 @@
 package project.musicwebsite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.musicwebsite.entity.Category;
 import project.musicwebsite.entity.ResponseObject;
+import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
-import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.model.request.SongRequest;
+import project.musicwebsite.repositories.CategoryRepository;
 import project.musicwebsite.service.implement.SongService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,7 +21,7 @@ public class SongController {
     @Autowired
     SongService songService;
 
-    @PostMapping(path = "/singer/{singerId}/song")
+    @PostMapping(path = "/creator/{singerId}/song")
     ResponseEntity<ResponseObject> save(@PathVariable Long singerId, @RequestBody Song song) {
         Song song1 = songService.save(singerId, song);
         return ResponseEntity.ok().body(
@@ -32,22 +36,6 @@ public class SongController {
                 new ResponseObject("ok", "SUCCESS", song)
         );
     }
-
-    @GetMapping(path = "/song")
-    ResponseEntity<ResponseObject> getAll() {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok", "SUCCESS", songService.getAll())
-        );
-
-    }
-
-    @GetMapping(path = "/song?name={name}")
-    ResponseEntity<ResponseObject> searchByName(@PathVariable String name) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok", "SUCCESS", songService.searchByName(name))
-        );
-    }
-
     @PutMapping(path = "/song/{id}")
     ResponseEntity<ResponseObject> update(@PathVariable Long id, @RequestBody Song song) {
         return ResponseEntity.ok().body(
@@ -71,7 +59,7 @@ public class SongController {
         );
     }
 
-    @GetMapping(path = "/singer/{id}/song")
+    @GetMapping(path = "/creator/{id}/song")
     ResponseEntity<ResponseObject> getSongBySignerId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok", "SUCCESS", songService.findSongBySingerId(id))
@@ -101,5 +89,85 @@ public class SongController {
 
     }
 
+    @PostMapping(path = "/song/patch")
+    ResponseEntity<ResponseObject> saveAllSong(@RequestBody List<Song> songs) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.saveListSong(songs))
+        );
 
+    }
+
+    @PostMapping(path = "/song")
+    ResponseEntity<ResponseObject> save(@RequestBody Song song) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.save(song))
+        );
+
+    }
+
+    @PostMapping("/song/{id}/singer")
+    ResponseEntity<ResponseObject> saveSingerToSong(@PathVariable Long id,
+                                                    @RequestBody List<Singer> singers) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.saveSingersToSong(id,singers)
+                )
+        );
+
+    }
+
+    @DeleteMapping("/song/{id}/singer")
+    ResponseEntity<ResponseObject> removeSingerFromSong(@PathVariable Long id,
+                                                    @RequestBody List<Singer> singers) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.removeSingerFromSong(id,singers)
+                )
+        );
+
+    }
+
+    @GetMapping(path = "/song")
+    ResponseEntity<ResponseObject> searchByNamePage(
+            @RequestParam(name = "name", defaultValue = "") String name,
+            @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize
+    ) {
+        System.out.println(name+"  " +pageNo + "" + pageSize);
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "SUCCESS",
+                        songService.searchSongPage(name, (pageNo-1)*20, pageSize)
+                )
+        );
+    }
+
+
+    @PostMapping("/song/{id}/category")
+    ResponseEntity<ResponseObject> saveCategoryToSong(@PathVariable Long id,
+                                                    @RequestBody List<Category> categories) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.addCategoryToSong(id,categories)
+                )
+        );
+
+    }
+
+    @DeleteMapping("/song/{id}/category")
+    ResponseEntity<ResponseObject> removeCategoryFromSong(@PathVariable Long id,
+                                                        @RequestBody List<Category> categories) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.removeCategoryToSong(id,categories)
+                )
+        );
+    }
 }

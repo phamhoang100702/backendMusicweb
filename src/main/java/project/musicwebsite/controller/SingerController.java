@@ -82,5 +82,13 @@ public class SingerController {
         );
     }
 
+    @PostMapping("/patch")
+    ResponseEntity<ResponseObject> savePatchSinger(@RequestBody List<Singer> singers){
+        List<Singer> list = singerService.addPatch(singers);
+        return ResponseEntity.ok(
+                new ResponseObject("ok","ALL FOLLOWERS",list)
+        );
+    }
+
 }
 

@@ -37,6 +37,17 @@ public class HandleFile {
     }
 
 
+    public String generatedName() {
+
+        String generatedFile = UUID.randomUUID().toString().replace("-", "");
+        return   generatedFile;
+
+    }
+
+    public String fileExtension(MultipartFile file){
+        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+        return  fileExtension;
+    }
     private boolean isLyricFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         return Arrays.asList(new String[]{"lrc"})
