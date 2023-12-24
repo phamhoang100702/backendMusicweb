@@ -19,7 +19,8 @@ public class Category {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "categories"
+            mappedBy = "categories",
+            cascade = CascadeType.ALL
     )
     @JsonIgnore
     private List<Song> songList;

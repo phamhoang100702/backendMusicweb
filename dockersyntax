@@ -9,4 +9,7 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Phanletruyen123"  -p 1433:14
 
 \\wsl$\docker-desktop-data\data\docker\volumes
 
-docker run --name my-postgres -d -p 4433:5432 -v my-vol:/var/lib/postgresql -e POSTGRES_PASSWORD=079522513 postgres
+docker run  --name my-postgres -d -p 5432:4433   -e POSTGRES_PASSWORD=1 postgres
+
+
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=Example@2022# -d mysql:tag --character-set-server=utf8mb4

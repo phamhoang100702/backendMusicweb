@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:4433/musicdb
     username: postgres
-    password: 0795225130
+    password: 1
     generate-unique-name: false
   servlet:
     multipart:

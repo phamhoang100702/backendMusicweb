@@ -1,15 +1,12 @@
 package project.musicwebsite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.Category;
 import project.musicwebsite.entity.ResponseObject;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
-import project.musicwebsite.model.request.SongRequest;
-import project.musicwebsite.repositories.CategoryRepository;
 import project.musicwebsite.service.implement.SongService;
 
 import java.util.List;
@@ -36,6 +33,7 @@ public class SongController {
                 new ResponseObject("ok", "SUCCESS", song)
         );
     }
+
     @PutMapping(path = "/song/{id}")
     ResponseEntity<ResponseObject> update(@PathVariable Long id, @RequestBody Song song) {
         return ResponseEntity.ok().body(
@@ -115,7 +113,7 @@ public class SongController {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.saveSingersToSong(id,singers)
+                        songService.saveSingersToSong(id, singers)
                 )
         );
 
@@ -123,11 +121,11 @@ public class SongController {
 
     @DeleteMapping("/song/{id}/singer")
     ResponseEntity<ResponseObject> removeSingerFromSong(@PathVariable Long id,
-                                                    @RequestBody List<Singer> singers) {
+                                                        @RequestBody List<Singer> singers) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.removeSingerFromSong(id,singers)
+                        songService.removeSingerFromSong(id, singers)
                 )
         );
 
@@ -139,10 +137,9 @@ public class SongController {
             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize
     ) {
-        System.out.println(name+"  " +pageNo + "" + pageSize);
         return ResponseEntity.ok().body(
                 new ResponseObject("ok", "SUCCESS",
-                        songService.searchSongPage(name, (pageNo-1)*20, pageSize)
+                        songService.searchSongPage(name, (pageNo - 1) * pageSize, pageSize)
                 )
         );
     }
@@ -150,11 +147,11 @@ public class SongController {
 
     @PostMapping("/song/{id}/category")
     ResponseEntity<ResponseObject> saveCategoryToSong(@PathVariable Long id,
-                                                    @RequestBody List<Category> categories) {
+                                                      @RequestBody List<Category> categories) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.addCategoryToSong(id,categories)
+                        songService.addCategoryToSong(id, categories)
                 )
         );
 
@@ -162,11 +159,11 @@ public class SongController {
 
     @DeleteMapping("/song/{id}/category")
     ResponseEntity<ResponseObject> removeCategoryFromSong(@PathVariable Long id,
-                                                        @RequestBody List<Category> categories) {
+                                                          @RequestBody List<Category> categories) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
-                        songService.removeCategoryToSong(id,categories)
+                        songService.removeCategoryToSong(id, categories)
                 )
         );
     }

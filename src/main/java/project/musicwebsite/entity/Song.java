@@ -30,7 +30,8 @@ public class Song extends AbstractModel {
     private String fileLyric;
 
     @ManyToMany(
-            fetch = FetchType.EAGER
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
     )
     @JoinTable(
             name = "song_category",

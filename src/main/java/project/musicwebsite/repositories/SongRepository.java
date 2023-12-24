@@ -49,7 +49,6 @@ public interface SongRepository extends  JpaRepository<Song,Long> {
 
     default Page<Song> searchAllByNameAsPage(String name,int offset,int limit) {
         // Limit to 10 records
-        System.out.println(name+"  " + offset +"  "+ limit);
         List<Song> resultList = searchAllByName(name, offset, limit);
         long totalCount = countByName(name);
 
