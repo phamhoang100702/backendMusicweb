@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Entity
-public class Click {
+public class Click extends AbstractModel{
     @SequenceGenerator(
         name="click_generator",
             allocationSize = 1
@@ -20,7 +20,6 @@ public class Click {
             generator = "click_generator"
     )
     private Long id;
-    private Date timeClick;
 
     @ManyToOne(
             fetch =  FetchType.LAZY

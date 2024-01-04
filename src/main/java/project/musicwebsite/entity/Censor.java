@@ -17,7 +17,7 @@ public class Censor extends User {
     private String address;
     @NotBlank(message = "phone is mandatory")
     private String phone;
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default true")
     private Boolean status;
 
     public Censor(String createdBy, String modifiedBy, String name,

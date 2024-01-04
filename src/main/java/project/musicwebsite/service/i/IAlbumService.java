@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IAlbumService {
-    Album save(Long id, Album album);
-    Album update(Long id,Album album);
+    Album save( Album album);
+    Album update(Album album);
     Album findById(Long id);
     List<Album> getAll();
     List<AlbumDTO> getBySinger(Long singerId);

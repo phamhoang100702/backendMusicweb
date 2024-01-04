@@ -37,13 +37,12 @@ public class CensorService implements ICensorService {
     @Override
     public List<Censor> getAll() {
         List<Censor> list = censorRepository.findAll();
-        if (list.isEmpty()) throw new NotFoundException("DONT HAVE ANY CENSOR");
         return list;
     }
 
     @Override
-    public Censor update(Long id, Censor censor) {
-        return censorRepository.findById(id)
+    public Censor update(Censor censor) {
+        return censorRepository.findById(censor.getId())
                 .map(censor1 -> {
                     censor1.setAddress(censor.getAddress());
                     censor1.setBirth(censor.getBirth());

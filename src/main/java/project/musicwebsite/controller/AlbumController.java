@@ -37,24 +37,24 @@ public class AlbumController {
         );
     }
 
-    @PostMapping("/singer/{id}/album")
-    ResponseEntity<ResponseObject> save(@PathVariable Long id,@RequestBody Album album){
+    @PostMapping("/album")
+    ResponseEntity<ResponseObject> save(@RequestBody Album album){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "OK",
                         "FINDING SUCCESS",
-                        albumService.save(id,album)
+                        albumService.save(album)
                 )
         );
     }
 
-    @PutMapping("/album/{id}")
-    ResponseEntity<ResponseObject> updateAlbum(@PathVariable Long id,@RequestBody Album album ){
+    @PutMapping("/album")
+    ResponseEntity<ResponseObject> updateAlbum(@RequestBody Album album ){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "OK",
                         "FINDING SUCCESS",
-                        albumService.update(id,album)
+                        albumService.update(album)
                 )
         );
     }

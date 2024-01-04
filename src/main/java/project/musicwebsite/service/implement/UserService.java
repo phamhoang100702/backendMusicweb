@@ -3,15 +3,12 @@ package project.musicwebsite.service.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.musicwebsite.entity.Role;
 import project.musicwebsite.entity.Singer;
-import project.musicwebsite.entity.UPremium;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.UserDTO;
 import project.musicwebsite.model.mapper.UserMapper;
-import project.musicwebsite.repositories.PUserRepository;
 import project.musicwebsite.repositories.RoleRepository;
 import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.UserRepository;
@@ -30,8 +27,8 @@ public class UserService implements IUserService {
     @Autowired
     SingerRepository singerRepository;
 
-    @Autowired
-    PUserRepository pUserRepository;
+//    @Autowired
+//    PUserRepository pUserRepository;
     @Autowired
     RoleRepository roleRepository;
     @Autowired
@@ -48,6 +45,10 @@ public class UserService implements IUserService {
         return user1;
     }
 
+    public List<User> searchAllUserByName(String name){
+        return  userRepository.searchAllByName(name);
+    }
+
     @Override
     public Optional<User> findById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -59,18 +60,19 @@ public class UserService implements IUserService {
     @Override
     public List<User> getAll() {
         List<User> list = userRepository.findByRole(1);
-        if (list.isEmpty()) throw new NotFoundException("Do not have any users");
+
         return (list);
     }
 
     @Override
-    public User update(Long id, User user) {
-        Optional<User> userOptional = userRepository.findById(id);
+    public User update( User user) {
+        Optional<User> userOptional = userRepository.findById(user.getId());
         return userOptional.map(user1 -> {
             user1.setName(user.getName());
             user1.setModifiedDate(new Date());
-//            user1.setPassword(user.getPassword());
-
+            user1.setEmail(user.getEmail());
+            String pw = passwordEncoder.encode(user.getPassword());
+            user1.setPassword(pw);
             return userRepository.save(user1);
         }).orElseThrow(() -> new NotFoundException("User dont exist"));
     }
@@ -101,15 +103,16 @@ public class UserService implements IUserService {
 
     @Override
     public User switchToPremium(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty() || user.get().getRole()!=1) throw new NotFoundException("This user is not exist");
-        user.map(user1 -> {
-            Role role = roleRepository.findByName("PREMIUM").get();
-            user1.addRole(role);
-            return userRepository.save(user1);
-        });
-        userRepository.switchToPremium(id,new Date());
-        return user.get();
+//        Optional<User> user = userRepository.findById(id);
+//        if(user.isEmpty() || user.get().getRole()!=1) throw new NotFoundException("This user is not exist");
+//        user.map(user1 -> {
+//            Role role = roleRepository.findByName("PREMIUM").get();
+//            user1.addRole(role);
+//            return userRepository.save(user1);
+//        });
+//        userRepository.switchToPremium(id,new Date());
+//        return user.get();
+        return null;
     }
 
     @Override
@@ -121,4 +124,6 @@ public class UserService implements IUserService {
         }
         return list;
     }
+
+
 }

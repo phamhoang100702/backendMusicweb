@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import project.musicwebsite.exception.BadRequestException;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Data
 @Table(name = "Songtbl")
 // Song SInger ver dang n-n
@@ -22,16 +23,14 @@ public class Song extends AbstractModel {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(columnDefinition = "boolean default false")
-    private Boolean status;
+    private Integer status;
     @Column(nullable = false, unique = false)
     private String fileSound;
-    @Column(nullable = false, unique = false)
+    @Column(nullable = true, unique = false)
     private String fileLyric;
 
     @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "song_category",
@@ -44,27 +43,18 @@ public class Song extends AbstractModel {
     @JsonIgnore
     private String avartar;
 
-    public boolean getStatus() {
+    public Song() {
+        super();
+        this.status = 0;
+    }
+
+    public Integer getStatus() {
         return this.status;
     }
 
-    public Song(String createdBy, String modifiedBy, String name, boolean status,
-                String fileSong, String fileLyric, Singer BSinger) {
-        super(createdBy, modifiedBy);
-        this.name = name;
-        this.status = status;
-        this.fileSound = fileSong;
-        this.fileLyric = fileLyric;
-        this.creator = BSinger;
-    }
 
-    public Song(String name, boolean status, String fileSong, String fileLyric) {
-        super();
-        this.name = name;
-        this.status = status;
-        this.fileSound = fileSong;
-        this.fileLyric = fileLyric;
-    }
+
+
     @ManyToOne(
             fetch = FetchType.LAZY
     )
@@ -93,6 +83,14 @@ public class Song extends AbstractModel {
     @JoinColumn(nullable = true)
     private List<Singer> singers = new LinkedList<>();
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "song",
+            cascade = CascadeType.ALL
+    )
+    @JsonIgnore
+    private List<Click> clicks = new ArrayList<>();
+
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -100,6 +98,7 @@ public class Song extends AbstractModel {
     )
     @JsonIgnore
     private List<Playlist> playlist = new LinkedList<>();
+
 
     public void addSinger(Singer singer){
         if(singers.contains(singer)) throw new BadRequestException("This singer is existed");

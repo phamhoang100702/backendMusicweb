@@ -34,6 +34,10 @@ public class PlaylistService implements IPlaylistService {
         return playlistRepository.save(playlist);
     }
 
+    public Playlist save( Playlist playlist) {
+        return playlistRepository.save(playlist);
+    }
+
     @Override
     public Playlist findFavoritePlaylist(Long userId) {
         Optional<Playlist> playlist = playlistRepository.findFirstByUserId(userId);
@@ -42,7 +46,7 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public List<Playlist> getAllForUser(Long userId) {
+    public List<Playlist> getAllPlaylistByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) throw new NotFoundException("USER NOT EXISTED");
         List<Playlist> list = playlistRepository.findPlaylistByUserId(userId);
@@ -53,7 +57,6 @@ public class PlaylistService implements IPlaylistService {
     @Override
     public List<Playlist> getAll() {
         List<Playlist> list = playlistRepository.findAll();
-        if (list.isEmpty()) throw new NoContentException("Dont have any playlist");
         return list;
     }
 
@@ -65,8 +68,8 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public Playlist update(Long id, Playlist playlist) {
-        return playlistRepository.findById(id)
+    public Playlist update( Playlist playlist) {
+        return playlistRepository.findById(playlist.getId())
                 .map(playlist1 -> {
                     playlist1.setName(playlist.getName());
                     playlist1.setStatus(playlist.getStatus());
@@ -87,7 +90,7 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public List<Song> getAllSongForPlaylist(Long id) {
+    public List<Song> getAllSongByPlaylist(Long id) {
         List<Long> list = playlistRepository.findAllSongPlaylist(id);
         if (list.isEmpty()) throw new NoContentException("List empty");
         List<Song> songs = new LinkedList<>();
@@ -97,5 +100,15 @@ public class PlaylistService implements IPlaylistService {
             songs.add(song.get());
         }
         return songs;
+    }
+
+    @Override
+    public List<Playlist> searchAllPlaylistNameForUser(String name) {
+        return playlistRepository.searchAllPlaylistByNameForUser(name);
+    }
+
+    @Override
+    public List<Playlist> getAllMainpagePlaylist() {
+        return playlistRepository.getAllMainpagePlaylist();
     }
 }

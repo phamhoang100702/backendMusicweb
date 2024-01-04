@@ -16,7 +16,7 @@ import java.util.ListIterator;
 public class SongDTO {
     private Long id;
     private String name;
-    private boolean status;
+    private int status;
     private String fileSong;
     private String fileLyric;
     private List<Category> categories;

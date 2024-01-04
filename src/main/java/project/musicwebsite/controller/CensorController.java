@@ -50,14 +50,13 @@ public class CensorController {
         );
     }
 
-    @PutMapping("/{id}")
-    ResponseEntity<ResponseObject> update(@PathVariable Long id,
-                                          @RequestBody Censor censor) {
+    @PutMapping("")
+    ResponseEntity<ResponseObject> update(@RequestBody Censor censor) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "OK",
                         "FINDING SUCCESS",
-                        censorService.update(id, censor)
+                        censorService.update( censor)
                 )
         );
     }

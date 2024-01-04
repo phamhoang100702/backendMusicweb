@@ -46,12 +46,12 @@ public class SingerService implements ISingerService {
     }
 
     @Override
-    public Singer update(Long id, Singer BSinger) {
-        return singerRepository.findById(id)
+    public Singer update(Singer singer) {
+        return singerRepository.findById(singer.getId())
                 .map(singer2 -> {
-                    singer2.setName(BSinger.getName());
-                    singer2.setBio(BSinger.getBio());
-                    singer2.setSocialMediaLink(BSinger.getSocialMediaLink());
+                    singer2.setName(singer.getName());
+                    singer2.setBio(singer.getBio());
+                    singer2.setSocialMediaLink(singer.getSocialMediaLink());
                     return singerRepository.save(singer2);
                 }).orElseThrow(() -> new NotFoundException("SINGER NOT EXISTED"));
     }
@@ -108,7 +108,6 @@ public class SingerService implements ISingerService {
     @Override
     public List<User> findAllFollower(Long id) {
         List<Long> list = singerRepository.findFollowersBySingerId(id);
-        if (list.isEmpty()) throw new NotFoundException("YOU DONT HAVE ANY FOLLOWERS");
         List<User> users = new LinkedList<>();
         for (Long item : list) {
             Optional<User> user = userRepository.findById(item);
@@ -126,4 +125,17 @@ public class SingerService implements ISingerService {
     public List<Singer> addPatch(List<Singer> singers){
         return singerRepository.saveAll(singers);
     }
+
+    @Override
+    public List<Singer> searchByNameOrNickName(String name) {
+        return singerRepository.searchByNameOrNickName(name,name);
+    }
+    public List<Singer> searchByNameOrNickName(String name,Boolean status){
+        return singerRepository.searchByNameOrNickName(name,name,status);
+    }
+
+//    public List<Singer> searchByNameOrNickName(String name,String nickName,Boolean status) {
+//        System.out.println(name + " " + nickName +"   " + status);
+//        return singerRepository.searchByNameOrNickNameAndStatus(name,nickName,status);
+//    }
 }

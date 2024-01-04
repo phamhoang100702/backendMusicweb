@@ -10,17 +10,21 @@ public interface IPlaylistService {
     Playlist save(Long userId,Playlist playlist);
     Playlist findFavoritePlaylist(Long userId);
 
-    List<Playlist> getAllForUser(Long userId);
+    List<Playlist> getAllPlaylistByUserId(Long userId);
 
     List<Playlist> getAll();
 
     Optional<Playlist> findById(Long id);
 
-    Playlist update(Long id,Playlist playlist);
+    Playlist update(Playlist playlist);
 
     void delete(Long id);
 
     Long getTotalPlayList();
 
-    List<Song> getAllSongForPlaylist(Long id);
+    List<Song> getAllSongByPlaylist(Long id);
+
+    List<Playlist> searchAllPlaylistNameForUser(String name);
+    List<Playlist> getAllMainpagePlaylist();
+
 }

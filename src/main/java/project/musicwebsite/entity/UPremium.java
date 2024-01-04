@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Entity
+//@Entity
 @DiscriminatorValue("2")
 public class UPremium extends User {
 

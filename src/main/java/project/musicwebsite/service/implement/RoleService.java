@@ -19,6 +19,11 @@ public class RoleService implements IRoleService {
         return roleRepository.save(role);
     }
 
+
+    public List<Role> save(List<Role> role) {
+        return roleRepository.saveAll(role);
+    }
+
     @Override
     public Role searchByName(String name) {
         return roleRepository.findByName(name).orElseThrow(
@@ -33,7 +38,7 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role updateRole(Long id, Role role) {
+    public Role updateRole( Role role) {
         return null;
     }
 

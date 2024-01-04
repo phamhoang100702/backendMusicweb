@@ -32,7 +32,7 @@ public class PlaylistController {
                 new ResponseObject(
                         "ok",
                         "FIND SUCCESS",
-                        playlistService.getAllForUser(id)
+                        playlistService.getAllPlaylistByUserId(id)
                 )
         );
     }
@@ -70,20 +70,29 @@ public class PlaylistController {
         );
     }
 
-    @PutMapping("/playlist/{id}")
-    ResponseEntity<ResponseObject> updatePlaylist(@PathVariable Long id,
-                                                  @RequestBody Playlist playlist) {
+    @PostMapping("/playlist")
+    ResponseEntity<ResponseObject> save(@RequestBody Playlist playlist) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(
+                        "ok",
+                        "SAVE SUCCESS",
+                        playlistService.save(playlist)
+                )
+        );
+    }
+    @PutMapping("/playlist")
+    ResponseEntity<ResponseObject> updatePlaylist(@RequestBody Playlist playlist) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "ok",
                         "UPDATE SUCCESS",
-                        playlistService.update(id, playlist)
+                        playlistService.update(playlist)
                 )
         );
     }
 
     @DeleteMapping("/playlist/{id}")
-    ResponseEntity<ResponseObject> updatePlaylist(@PathVariable Long id) {
+    ResponseEntity<ResponseObject> deletePlaylist(@PathVariable Long id) {
         playlistService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
@@ -95,13 +104,37 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlist/{id}/song")
-    ResponseEntity<ResponseObject> getAllSongFromAlbum(@PathVariable Long id) {
+    ResponseEntity<ResponseObject> getAllSongFromPlaylistId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseObject(
                         "ok",
                         "SUCCESS",
-                        playlistService.getAllSongForPlaylist(id))
+                        playlistService.getAllSongByPlaylist(id))
         );
 
+    }
+
+    @GetMapping("/user/playlist")
+    ResponseEntity<ResponseObject> searchAllPlaylistByNameForUser(
+            @RequestParam(name = "name",defaultValue = "") String name
+    ) {
+        System.out.println("name" + name);
+        return ResponseEntity.ok().body(
+                new ResponseObject(
+                        "ok",
+                        "SUCCESS",
+                        playlistService.searchAllPlaylistNameForUser(name))
+        );
+    }
+
+    @GetMapping("/playlist/mainpage")
+    ResponseEntity<ResponseObject> getAllPlaylistForUser(
+    ) {
+        return ResponseEntity.ok().body(
+                new ResponseObject(
+                        "ok",
+                        "SUCCESS",
+                        playlistService.getAllMainpagePlaylist())
+        );
     }
 }

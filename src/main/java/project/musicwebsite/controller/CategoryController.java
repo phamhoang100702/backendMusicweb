@@ -55,6 +55,18 @@ public class CategoryController {
         );
     }
 
+    @GetMapping("{id}")
+    ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(
+                        "OK",
+                        "FINDING SUCCESS",
+                        categoryService.findById(id)
+                )
+        );
+    }
+
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteById(@PathVariable Long id) {
         categoryService.deleteById(id);

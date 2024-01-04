@@ -17,8 +17,13 @@ public class CategoryService implements ICagegoryService {
     @Override
     public List<Category> getAll() {
         List<Category> list = categoryRepository.findAll();
-        if(list.isEmpty()) throw new NotFoundException("Dont have any category");
         return list;
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("This category is not existed"));
     }
 
     @Override

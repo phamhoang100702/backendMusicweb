@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Category {
+public class Category extends AbstractModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,9 +20,7 @@ public class Category {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "categories",
-            cascade = CascadeType.ALL
-    )
+            mappedBy = "categories")
     @JsonIgnore
-    private List<Song> songList;
+    private List<Song> songList = new LinkedList<>();
 }

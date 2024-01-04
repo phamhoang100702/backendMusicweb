@@ -8,6 +8,8 @@ import project.musicwebsite.entity.ResponseObject;
 import project.musicwebsite.entity.Role;
 import project.musicwebsite.service.implement.RoleService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/role")
 public class RoleController {
@@ -22,6 +24,16 @@ public class RoleController {
                                 roleService.save(role))
                 );
     }
+
+    @PostMapping("/patch")
+    public ResponseEntity<ResponseObject> savePatch(@RequestBody List<Role> roles) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ResponseObject("Save success", "ok",
+                                roleService.save(roles))
+                );
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {

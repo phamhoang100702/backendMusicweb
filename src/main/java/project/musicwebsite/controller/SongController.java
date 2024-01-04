@@ -9,6 +9,7 @@ import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
 import project.musicwebsite.service.implement.SongService;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,10 +35,10 @@ public class SongController {
         );
     }
 
-    @PutMapping(path = "/song/{id}")
-    ResponseEntity<ResponseObject> update(@PathVariable Long id, @RequestBody Song song) {
+    @PutMapping(path = "/song")
+    ResponseEntity<ResponseObject> update( @RequestBody Song song) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok", "SUCCESS", songService.update(id, song))
+                new ResponseObject("ok", "SUCCESS", songService.update( song))
         );
     }
 
@@ -77,8 +78,9 @@ public class SongController {
     }
 
     @DeleteMapping(path = "/playlist/{playlistId}/song/{songId}")
-    ResponseEntity<ResponseObject> removeSongFromPlaylist(@PathVariable Long playlistId,
-                                                          @PathVariable Long songId) {
+    ResponseEntity<ResponseObject> removeSongFromPlaylist(
+            @PathVariable Long playlistId,
+            @PathVariable Long songId) {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok",
                         "SUCCESS",
@@ -131,7 +133,7 @@ public class SongController {
 
     }
 
-    @GetMapping(path = "/song")
+    @GetMapping(path = "/song/page")
     ResponseEntity<ResponseObject> searchByNamePage(
             @RequestParam(name = "name", defaultValue = "") String name,
             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
@@ -140,6 +142,26 @@ public class SongController {
         return ResponseEntity.ok().body(
                 new ResponseObject("ok", "SUCCESS",
                         songService.searchSongPage(name, (pageNo - 1) * pageSize, pageSize)
+                )
+        );
+    }
+
+    @GetMapping(path = "/song")
+    ResponseEntity<ResponseObject> searchByName(
+            @RequestParam(name = "name", defaultValue = "") String name,
+            @RequestParam(name = "status",required = false ) Integer status
+    ) {
+        List<Song> songs = new LinkedList<>();
+        if(status == null){
+            songs = songService.searchByName(name);
+        }
+        else {
+            songs = songService.searchByName(name,status);
+        }
+
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "SUCCESS",
+                        songs
                 )
         );
     }
@@ -164,6 +186,36 @@ public class SongController {
                 new ResponseObject("ok",
                         "SUCCESS",
                         songService.removeCategoryToSong(id, categories)
+                )
+        );
+    }
+
+//    @GetMapping("/song/all")
+//    ResponseEntity<ResponseObject> getAllSong() {
+//        return ResponseEntity.ok().body(
+//                new ResponseObject("ok",
+//                        "SUCCESS",
+//                        songService.getAll()
+//                )
+//        );
+//    }
+
+    @GetMapping("/category/{categoryId}/song")
+    ResponseEntity<ResponseObject> getAllSongByCategoryId(@PathVariable Long categoryId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.getSongsByCategoryId(categoryId)
+                )
+        );
+    }
+
+    @GetMapping("/singer/{singerId}/song")
+    ResponseEntity<ResponseObject> getAllSongBySingerId(@PathVariable Long singerId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.getSongsBySingerId(singerId)
                 )
         );
     }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
 
@@ -24,12 +25,18 @@ public interface UserRepository extends JpaRepository<User,Long> {
             nativeQuery = true
     )
     List<Long> findFollowedSingerByUserId(Long user_id);
-
-    @Transactional
-    @Modifying
+//
+//    @Transactional
+//    @Modifying
+//    @Query(
+//            value = "Update Usertbl set role=2 ,startTime=?2 where id=?1",
+//            nativeQuery = true
+//    )
+//    void switchToPremium(Long id, Date date);
     @Query(
-            value = "Update Usertbl set role=2 ,startTime=?2 where id=?1",
-            nativeQuery = true
+            value = "select  user from User user where " +
+                    "user.name like %:name% order by user.id asc"
     )
-    void switchToPremium(Long id, Date date);
+    List<User> searchAllByName(
+            @RequestParam(name = "name") String name);
 }

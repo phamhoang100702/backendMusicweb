@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.LinkedList;
 import java.util.List;
 
-@Entity
+//@Entity
 @Data
 @NoArgsConstructor
 @Table(name = "PremiumPackagetbl")

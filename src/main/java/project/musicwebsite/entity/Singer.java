@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
-@NoArgsConstructor
 @DiscriminatorValue("3")
 public class Singer extends User {
     private String bio;
@@ -20,21 +18,13 @@ public class Singer extends User {
 
     @JoinColumn(nullable = true)
     private String nickName;
+    @JoinColumn(columnDefinition = "boolean default true")
+    private Boolean status;
 
-    public Singer(String createdBy, String modifiedBy, String name,
-                  String email, String password, String bio, String socialMediaLink) {
-        super(createdBy, modifiedBy, name, email, password);
-        this.bio = bio;
-        this.socialMediaLink = socialMediaLink;
-    }
-
-    public Singer(String name, String email, String password, String bio,
-                  String socialMediaLink) {
-        super(name, email, password);
-        this.bio = bio;
-        this.socialMediaLink = socialMediaLink;
-    }
-
+   public Singer(){
+       super();
+       this.status = true;
+   }
 
     @ManyToMany(
             cascade = CascadeType.ALL,

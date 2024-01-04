@@ -11,7 +11,7 @@ public interface ISongService {
     List<Song> getAll();
     List<Song> searchByName(String name);
     Optional<Song> findById(Long id);
-    Song update(Long id, Song song);
+    Song update( Song song);
     Playlist saveSongToPlaylist(Long idSong,Long idPlaylist);
 
     Playlist removeSongFromPlaylist(Long idSong,Long idPlaylist);
@@ -25,10 +25,22 @@ public interface ISongService {
     Song saveSingersToSong(Long songId, List<Singer> singers);
     Song removeSingerFromSong(Long songId, List<Singer> singers);
 
-
     Song addCategoryToSong(Long songId, List<Category> categories);
 
     Song removeCategoryToSong(Long songId, List<Category> categories);
 
     Song save(Song song);
+
+    List<Song> getSongsByCategoryId(Long categoryId);
+
+    List<Song> getSongsBySingerId(Long singerId);
+
+
+    List<Song> findAllSongByNameAndCategoryAndSinger(
+            String name,
+            Long  categoryId,
+            Long singerId
+    );
+
+
 }

@@ -23,9 +23,7 @@ import java.util.Objects;
         discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue("1")
 public class User extends AbstractModel {
-
     @Id
-
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
@@ -75,6 +73,14 @@ public class User extends AbstractModel {
     )
     @JsonIgnore
     private List<Song> songs;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private List<Click> clicks = new LinkedList<>();
 
     public User(String createdBy, String modifiedBy, String name, String email, String password) {
         super(createdBy, modifiedBy);

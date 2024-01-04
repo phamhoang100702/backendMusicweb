@@ -33,15 +33,14 @@ public class AlbumService implements IAlbumService {
     SongRepository songRepository;
 
     @Override
-    public Album save(Long id, Album album) {
-        Optional<Singer> singer = singerRepository.findById(id);
-        album.setSinger(singer.get());
+    public Album save( Album album) {
+
         return albumRepository.save(album);
     }
 
     @Override
-    public Album update(Long id, Album album) {
-        return albumRepository.findById(id)
+    public Album update(Album album) {
+        return albumRepository.findById(album.getId())
                 .map(album2 -> {
                     album2.setName(album.getName());
                     album2.setPublish(album.getPublish());

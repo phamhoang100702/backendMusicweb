@@ -13,4 +13,6 @@ public interface ICagegoryService {
     public Category searchByName(String name);
 
     public Category save(Category category);
+
+    public Category findById(Long id);
 }

@@ -9,7 +9,7 @@ public interface ICensorService {
     Censor save(Censor censor);
     Optional<Censor> findById(Long id);
     List<Censor> getAll();
-    Censor update(Long id,Censor censor);
+    Censor update(Censor censor);
 
     void delete(Long id);
 

@@ -13,6 +13,11 @@ import project.musicwebsite.s3.HandleFile;
 import project.musicwebsite.s3.S3Bucket;
 import project.musicwebsite.s3.S3Service;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping(path = "/api/v1/s3")
 //@CrossOrigin(origins = "http://127.0.0.1    :5500")
@@ -29,28 +34,41 @@ public class S3Controller {
     final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<ResponseObject> upFile( @RequestParam(name = "sound")  MultipartFile sound,
-                                          @RequestParam(name = "lyric") MultipartFile lyric,
-                                          @RequestParam( name= "avatar") MultipartFile avatar ) {
-
-        String name = handleFile.generatedName();
-        String soundExtension = handleFile.fileExtension(sound);
-        String lyricExtension = handleFile.fileExtension(lyric);
-        String avatarExtension = handleFile.fileExtension(avatar);
-        String songFile = "song/sounds/" + name + "." + soundExtension;
-        String lyricFile = "song/lyrics/" + name +"." + lyricExtension;
-        String avatarFile = "song/image/" + name+"." + avatarExtension;
-
-        String url1 = path + songFile;
-        String url2 = path + lyricFile;
-        String url3 = path + avatarFile;
-        String[] url = {url1,url2,url3};
+    ResponseEntity<ResponseObject> upFile(@RequestParam(name = "sound",required = true) MultipartFile sound,
+                                          @RequestParam(name = "lyric", required = false) MultipartFile lyric,
+                                          @RequestParam(name = "avatar", required = false) MultipartFile avatar) {
         try {
-            s3Service.putObject(this.s3Bucket.getName(), songFile, sound.getBytes());
-            s3Service.putObject(this.s3Bucket.getName(), lyricFile, lyric.getBytes());
-            s3Service.putObject(this.s3Bucket.getName(), avatarFile, avatar.getBytes());
+
+            String name = handleFile.generatedName();
+            String songFile, lyricFile, avatarFile;
+            Map<String,String> urls = new HashMap<>();
+            urls.put("sound","");
+            urls.put("lyric","");
+            urls.put("avatar","");
+
+            if(!sound.isEmpty()){
+                String soundExtension = handleFile.fileExtension(sound);
+                songFile = "song/sounds/" + name + "." + soundExtension;
+                s3Service.putObject(this.s3Bucket.getName(), songFile, sound.getBytes());
+                String url1 = path + songFile;
+                urls.put("sound",url1);
+            }
+            if ( lyric!=null) {
+                String lyricExtension = handleFile.fileExtension(lyric);
+                lyricFile = "song/lyrics/" + name + "." + lyricExtension;
+                s3Service.putObject(this.s3Bucket.getName(), lyricFile, lyric.getBytes());
+                String url2 = path + lyricFile;
+                urls.put("lyric",url2);
+            }
+            if(avatar!=null){
+                String avatarExtension = handleFile.fileExtension(avatar);
+                avatarFile = "song/image/" + name + "." + avatarExtension;
+                String url3 = path + avatarFile;
+                s3Service.putObject(this.s3Bucket.getName(), avatarFile, avatar.getBytes());
+                urls.put("avatar",url3);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("Ok", "success", url)
+                    new ResponseObject("Ok", "success", urls)
             );
         } catch (Exception e) {
             throw new FileUploadIoException("File is not acceptable");
@@ -76,11 +94,11 @@ public class S3Controller {
 
     @DeleteMapping(value = "/{deleteFile}")
     ResponseEntity<ResponseObject> deleteFile(@PathVariable String deleteFile) {
-        s3Service.delete(s3Bucket.getName(),deleteFile);
+        s3Service.delete(s3Bucket.getName(), deleteFile);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Delete Success","Ok","")
+                        new ResponseObject("Delete Success", "Ok", "")
                 );
 
     }
@@ -103,7 +121,7 @@ public class S3Controller {
     ResponseEntity<ResponseObject> upLyric(@RequestParam("file") MultipartFile file) {
         String name = handleFile.storeLyricsFile(file);
         String pathLyrics = "song/lyrics/" + name;
-        String url = path+pathLyrics;
+        String url = path + pathLyrics;
         try {
             s3Service.putObject(this.s3Bucket.getName(), path, file.getBytes());
             return ResponseEntity.ok().body(
@@ -130,7 +148,7 @@ public class S3Controller {
     ResponseEntity<ResponseObject> upImages(@RequestParam("file") MultipartFile file) {
         String name = handleFile.storeFileImages(file);
         String pathImages = "Image/" + name;
-        String url = path+pathImages;
+        String url = path + pathImages;
         try {
             s3Service.putObject(this.s3Bucket.getName(), pathImages, file.getBytes());
             return ResponseEntity.ok().body(

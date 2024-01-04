@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "Playlisttbl")
 public class Playlist extends  AbstractModel{
@@ -29,11 +28,17 @@ public class Playlist extends  AbstractModel{
 //    @Column(columnDefinition = "boolean default true")
     private Boolean status;
 
+    public Playlist() {
+        this.status = true;
+    }
+
+    private String role;
+
     @ManyToOne(
             fetch = FetchType.EAGER,
             targetEntity = User.class
     )
-    @JoinColumn(name = "creatorId",nullable = false)
+    @JoinColumn(name = "creatorId",nullable = true)
     private User creator;
 
     @ManyToMany(

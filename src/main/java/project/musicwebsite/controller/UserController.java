@@ -31,8 +31,10 @@ public class UserController {
     }
 
     @GetMapping("")
-    ResponseEntity<ResponseObject> getAll() {
-        List<User> list = userService.getAll();
+    ResponseEntity<ResponseObject> getAllByName(
+            @RequestParam(name = "name",defaultValue = "") String name
+    ) {
+        List<User> list = userService.searchAllUserByName(name) ;
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "Finding success", list)
         );
@@ -46,9 +48,10 @@ public class UserController {
         );
     }
 
-    @PutMapping("/{id}")
-    ResponseEntity<ResponseObject> update(@PathVariable Long id, @Valid @RequestBody User user) {
-        User user1 = userService.update(id, user);
+    @PutMapping("")
+    ResponseEntity<ResponseObject> update( @Valid @RequestBody User user) {
+
+        User user1 = userService.update( user);
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "Updating success", user1)
         );
