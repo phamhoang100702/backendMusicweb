@@ -15,4 +15,5 @@ public interface AlbumRepository extends JpaRepository<Album,Long> {
 
     @Query("SELECT album FRom Album album where album.name like %?1%")
     List<Album> searchAlbumByNames(String string);
+
 }

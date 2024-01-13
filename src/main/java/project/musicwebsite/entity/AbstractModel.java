@@ -29,10 +29,8 @@ public class AbstractModel {
         this.modifiedDate = new Date();
     }
 
-    @JsonIgnore
     private String createdBy;
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy@HH:mm:ss.SSSZ")
     private Date modifiedDate;
-    @JsonIgnore
     private String modifiedBy;
 }

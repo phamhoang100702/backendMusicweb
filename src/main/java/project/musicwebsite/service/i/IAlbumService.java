@@ -22,6 +22,8 @@ public interface IAlbumService {
 
     void removeSongFromAlbum(Long albumId,Long songId);
 
-    Long getTotalAlbum();
+    Long count();
+
+    Long countBySingerId();
 
 }

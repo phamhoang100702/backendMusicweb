@@ -37,6 +37,7 @@ public class User extends AbstractModel {
     @Email
     private String email;
     @Column(nullable = false)
+//    @JsonIgnore
     private String password;
 
     @Column(insertable = false, updatable = false)
@@ -52,10 +53,9 @@ public class User extends AbstractModel {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @JsonIgnore
+
     private List<Role> roles = new ArrayList<>();
 
-    @JsonIgnore
     private String avatar;
 
     @ManyToMany(

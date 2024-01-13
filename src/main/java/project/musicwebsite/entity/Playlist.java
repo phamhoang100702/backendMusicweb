@@ -62,6 +62,7 @@ public class Playlist extends  AbstractModel{
         song.getPlaylist().remove(this);
     }
 
+
     public boolean isExisted(Song song){
         return this.songs.contains(song);
     }

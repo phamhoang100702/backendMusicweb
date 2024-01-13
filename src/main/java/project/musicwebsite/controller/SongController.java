@@ -2,6 +2,7 @@ package project.musicwebsite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.Category;
 import project.musicwebsite.entity.ResponseObject;
@@ -58,10 +59,19 @@ public class SongController {
         );
     }
 
-    @GetMapping(path = "/creator/{id}/song")
-    ResponseEntity<ResponseObject> getSongBySignerId(@PathVariable Long id) {
+    @DeleteMapping(path = "/album/{albumId}/song/{songId}")
+    ResponseEntity<ResponseObject> removeSongFromAlbum(@PathVariable Long albumId,
+                                                  @PathVariable Long songId) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok", "SUCCESS", songService.findSongBySingerId(id))
+                new ResponseObject("ok", "Success",
+                        songService.removeSongFromAlbum(albumId, songId))
+        );
+    }
+
+    @GetMapping(path = "/creator/{id}/song")
+    ResponseEntity<ResponseObject> getSongByCreatorId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "SUCCESS", songService.findSongByCreatorId(id))
         );
 
     }
@@ -179,6 +189,7 @@ public class SongController {
 
     }
 
+//    @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/song/{id}/category")
     ResponseEntity<ResponseObject> removeCategoryFromSong(@PathVariable Long id,
                                                           @RequestBody List<Category> categories) {
@@ -190,15 +201,15 @@ public class SongController {
         );
     }
 
-//    @GetMapping("/song/all")
-//    ResponseEntity<ResponseObject> getAllSong() {
-//        return ResponseEntity.ok().body(
-//                new ResponseObject("ok",
-//                        "SUCCESS",
-//                        songService.getAll()
-//                )
-//        );
-//    }
+    @GetMapping("/song/count")
+    ResponseEntity<ResponseObject> getTotalSong() {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.getTotalSong()
+                )
+        );
+    }
 
     @GetMapping("/category/{categoryId}/song")
     ResponseEntity<ResponseObject> getAllSongByCategoryId(@PathVariable Long categoryId) {

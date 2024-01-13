@@ -7,4 +7,7 @@ import lombok.Getter;
 @Builder
 public class LoginDTO {
     private String token;
+    private Long userId;
+    private String roles;
+
 }

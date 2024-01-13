@@ -9,22 +9,23 @@ import java.util.Date;
 
 @Data
 @Entity
-@NoArgsConstructor
 @DiscriminatorValue("4")
 public class Censor extends User {
 
-    private Date birth;
     private String address;
-    @NotBlank(message = "phone is mandatory")
+//    @NotBlank(message = "phone is mandatory")
     private String phone;
     @Column(columnDefinition = "boolean default true")
     private Boolean status;
+
+    public Censor() {
+        this.status = true;
+    }
 
     public Censor(String createdBy, String modifiedBy, String name,
                   String email, String password, Date birth, String address,
                   String phone, Boolean status) {
         super(createdBy, modifiedBy, name, email, password);
-        this.birth = birth;
         this.address = address;
         this.phone = phone;
         this.status = status;

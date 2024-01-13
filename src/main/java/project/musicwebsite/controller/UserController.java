@@ -2,6 +2,7 @@ package project.musicwebsite.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.ResponseObject;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     UserService userService;
+
 
     @PostMapping("")
     ResponseEntity<ResponseObject> save(@Valid @RequestBody User user) {
@@ -73,17 +75,34 @@ public class UserController {
         );
     }
 
-    @PostMapping("/{id}/premium")
-    ResponseEntity<ResponseObject> switchToPremium(@PathVariable Long id) {
-        return ResponseEntity.ok(
-                new ResponseObject("Ok", "success", userService.switchToPremium(id))
-        );
-    }
+
+
+//    @PostMapping("/{id}/premium")
+//    ResponseEntity<ResponseObject> switchToPremium(@PathVariable Long id) {
+//        return ResponseEntity.ok(
+//                new ResponseObject("Ok", "success", userService.switchToPremium(id))
+//        );
+//    }
 
     @PostMapping("/patch")
         ResponseEntity<ResponseObject> saveListUser(@RequestBody ArrayList<User> list) {
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "success", userService.saveListUser(list))
+        );
+    }
+
+
+    @GetMapping("/count")
+    ResponseEntity<ResponseObject> getTotalUser() {
+        return ResponseEntity.ok(
+                new ResponseObject("Ok", "success", userService.count())
+        );
+    }
+
+    @GetMapping("/count/date/{date}")
+    ResponseEntity<ResponseObject> countByDate(@PathVariable Long date) {
+        return ResponseEntity.ok(
+                new ResponseObject("Ok", "success", userService.getChartInforInTimePeriod(date))
         );
     }
 

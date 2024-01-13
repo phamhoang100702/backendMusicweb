@@ -2,6 +2,7 @@ package project.musicwebsite.service.i;
 
 import project.musicwebsite.entity.Click;
 import project.musicwebsite.entity.Song;
+import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.ClickDTO;
 
 import java.sql.SQLException;
@@ -22,6 +23,8 @@ public interface IClickService {
 
     Long countListensBySong(Song song);
 
+    Long count();
 
+    List<ChartDTO> getChartInforInTimePeriod(Long time);
 
 }

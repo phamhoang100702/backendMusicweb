@@ -40,7 +40,6 @@ public class Album extends AbstractModel{
             mappedBy = "album",
             fetch = FetchType.LAZY
     )
-    @JsonIgnore
     private List<Song> songs = new LinkedList<>();
 
     public Album(String createdBy, String modifiedBy, String name, Date publish, String thumbnail) {

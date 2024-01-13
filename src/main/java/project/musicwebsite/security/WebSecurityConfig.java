@@ -1,11 +1,10 @@
 package project.musicwebsite.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +23,7 @@ import project.musicwebsite.exception.UnauthorizedHandler;
 import project.musicwebsite.service.security.UserDetailServiceImp;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -40,49 +40,63 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain applicationSecutiry(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain applicationSecutiry(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .formLogin(AbstractHttpConfigurer::disable)
-                .exceptionHandling(h->h.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(h -> h.authenticationEntryPoint(unauthorizedHandler))
                 .securityMatcher("/**")
-                .authorizeHttpRequests(registry->registry
+                .authorizeHttpRequests(registry -> registry
                         .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/**").hasRole("ADMIN")
-//                        .requestMatchers("/api/v1/singer/**").hasAnyAuthority("SINGER","ADMIN","CENSOR")
-//                        .requestMatchers("/api/v1/user/**").hasAnyAuthority("USER","CENSOR","ADMIN")
-//                        .requestMatchers("/api/v1/singer/{id1}/user/{id2}").hasAnyAuthority("USER","ADMIN")
-//                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();
     }
 
+
     @Bean
-    public WebMvcConfigurer corsMvcConfigurer(){
+    public WebMvcConfigurer corsMvcConfigurer() {
+        System.out.println("active");
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("GET","PUT","DELETE","POST")
-                        .allowedOrigins("http://localhost:9100");
+                        .allowedMethods("*")
+                        .allowedOrigins("http://localhost:9100", "http://localhost:9200", "http://localhost:9300")
+                        .allowedHeaders("Authorization", "Content-Type")
+                        .exposedHeaders("Authorization")
+                        .allowCredentials(true);
                 WebMvcConfigurer.super.addCorsMappings(registry);
             }
         };
     }
 
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:9100","http://localhost:9200"));
+//        configuration.setAllowedMethods(Arrays.asList("GET"));
+//        configuration.setAllowedHeaders(List.of("Authorization"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
+
+
+
 
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception{
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         var builder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         builder
                 .userDetailsService(userDetailServiceImp)

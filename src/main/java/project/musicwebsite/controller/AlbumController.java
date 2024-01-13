@@ -72,7 +72,7 @@ public class AlbumController {
     }
 
     @GetMapping("/singer/{id}/album")
-    ResponseEntity<ResponseObject> getAlbumBySinger(@PathVariable Long id){
+    ResponseEntity<ResponseObject> getAllAlbumBySinger(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
                         "OK",
@@ -82,16 +82,16 @@ public class AlbumController {
         );
     }
 
-    @GetMapping("/album/name={name}")
-    ResponseEntity<ResponseObject> getAlbumBySinger(@PathVariable String name){
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(
-                        "OK",
-                        "FINDING SUCCESS",
-                        albumService.getByName(name)
-                )
-        );
-    }
+//    @GetMapping("/album/name={name}")
+//    ResponseEntity<ResponseObject> getAlbumBySinger(@PathVariable String name){
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                new ResponseObject(
+//                        "OK",
+//                        "FINDING SUCCESS",
+//                        albumService.getByName(name)
+//                )
+//        );
+//    }
     @GetMapping("/album/{id}/song")
     ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -103,17 +103,17 @@ public class AlbumController {
         );
     }
 
-    @DeleteMapping("/album/{albumId}/song/{songId}")
-    ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long albumId, @PathVariable Long songId) {
-        albumService.removeSongFromAlbum(albumId, songId);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(
-                        "OK",
-                        "FINDING SUCCESS",
-                        albumService.getSongByAlbumId(albumId)
-                )
-        );
-    }
+//    @DeleteMapping("/album/{albumId}/song/{songId}")
+//    ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long albumId, @PathVariable Long songId) {
+//        albumService.removeSongFromAlbum(albumId, songId);
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                new ResponseObject(
+//                        "OK",
+//                        "FINDING SUCCESS",
+//                        albumService.getSongByAlbumId(albumId)
+//                )
+//        );
+//    }
 
 
 

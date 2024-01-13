@@ -3,21 +3,20 @@ package project.musicwebsite.service.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import project.musicwebsite.entity.Playlist;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.UserDTO;
 import project.musicwebsite.model.mapper.UserMapper;
-import project.musicwebsite.repositories.RoleRepository;
-import project.musicwebsite.repositories.SingerRepository;
-import project.musicwebsite.repositories.UserRepository;
+import project.musicwebsite.repositories.*;
 import project.musicwebsite.service.i.IUserService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class UserService implements IUserService {
@@ -33,6 +32,12 @@ public class UserService implements IUserService {
     RoleRepository roleRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    PlaylistRepository playlistRepository;
+    @Autowired
+    ClickRepository clickRepository;
+    @Autowired
+    SongRepository songRepository;
 
 
     @Override
@@ -42,10 +47,12 @@ public class UserService implements IUserService {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if (userOptional.isPresent()) throw new BadRequestException("Email existed");
         User user1 = userRepository.save(user);
+
         return user1;
     }
 
     public List<User> searchAllUserByName(String name){
+        name = name.toLowerCase();
         return  userRepository.searchAllByName(name);
     }
 
@@ -97,9 +104,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Long getTotalSong() {
+    public Long count() {
         return userRepository.count();
     }
+
 
     @Override
     public User switchToPremium(Long id) {
@@ -125,5 +133,29 @@ public class UserService implements IUserService {
         return list;
     }
 
+    @Override
+    public Boolean checkFollowedSinger(Long userId, Long singerId) {
+        return null;
+    }
 
+    @Override
+    public List<ChartDTO> getChartInforInTimePeriod(Long time) {
+        LocalDate date = LocalDate.now().minusDays(time);
+        List<ChartDTO> chartDTOS = new LinkedList<>();
+
+        List<Object[]> list = userRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
+        List<Object[]> list1 = singerRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
+        List<Object[]> list2 = songRepository.getInfoInTimePeriod(java.sql.Date.valueOf(date));
+        List<Object[]> list3 = clickRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
+        Map<String,Integer> map = new TreeMap<>();
+
+
+        for (Object[] objects : list) {
+            ChartDTO chartDTO = new ChartDTO();
+            Date date1 = (Date) objects[1];
+            System.out.println(date1);
+      }
+
+        return chartDTOS;
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Click;
 import project.musicwebsite.entity.Song;
 import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.ClickDTO;
 import project.musicwebsite.repositories.ClickRepository;
 import project.musicwebsite.repositories.SongRepository;
@@ -47,10 +48,10 @@ public class ClickService implements IClickService {
         List<ClickDTO> clickDTOS = new LinkedList<>();
 
         List<Object[]> list = clickRepository.countAllClickByDays(Date.valueOf(date));
-        for(Object[] objects : list){
+        for (Object[] objects : list) {
             Song song = (Song) objects[1];
             Long id = (Long) objects[0];
-            clickDTOS.add(new ClickDTO(id,song));
+            clickDTOS.add(new ClickDTO(id, song));
         }
 
         return clickDTOS;
@@ -63,10 +64,10 @@ public class ClickService implements IClickService {
         List<ClickDTO> clickDTOS = new LinkedList<>();
 
         List<Object[]> list = clickRepository.countAllClickByDays(Date.valueOf(date));
-        for(Object[] objects : list){
+        for (Object[] objects : list) {
             Song song = (Song) objects[1];
             Long id = (Long) objects[0];
-            clickDTOS.add(new ClickDTO(id,song));
+            clickDTOS.add(new ClickDTO(id, song));
         }
 
         return clickDTOS;
@@ -78,25 +79,40 @@ public class ClickService implements IClickService {
         List<ClickDTO> clickDTOS = new LinkedList<>();
 
         List<Object[]> list = clickRepository.countAllClickByDays(Date.valueOf(date));
-        for(Object[] objects : list){
+        for (Object[] objects : list) {
             Song song = (Song) objects[1];
             Long id = (Long) objects[0];
-            clickDTOS.add(new ClickDTO(id,song));
+            clickDTOS.add(new ClickDTO(id, song));
         }
 
         return clickDTOS;
     }
 
     @Override
+    public List<ChartDTO> getChartInforInTimePeriod(Long time) {
+        LocalDate date = LocalDate.now().minusDays(time);
+        List<ChartDTO> chartDTOS = new LinkedList<>();
+
+        List<Object[]> list = clickRepository.getChartInforInTimePeriod(Date.valueOf(date));
+        for (Object[] objects : list) {
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setTimes((Long) objects[0]);
+            chartDTO.setDate((Date) objects[1]);
+        }
+
+        return chartDTOS;
+    }
+
+    @Override
     public List<ClickDTO> countListens() {
         List<Object[]> list = clickRepository.countAllBySong();
         List<ClickDTO> clickDTOS = new LinkedList<>();
-        for(Object[] objects : list){
+        for (Object[] objects : list) {
             Long id = (Long) objects[0];
             Song song = (Song) objects[1];
-            clickDTOS.add(new ClickDTO(id,song));
+            clickDTOS.add(new ClickDTO(id, song));
         }
-        return  clickDTOS;
+        return clickDTOS;
     }
 
     @Override
@@ -105,5 +121,10 @@ public class ClickService implements IClickService {
             throw new NotFoundException("This song is not existed");
         }
         return clickRepository.countAllBySong(song);
+    }
+
+    @Override
+    public Long count() {
+        return clickRepository.count();
     }
 }

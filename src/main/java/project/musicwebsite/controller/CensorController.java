@@ -3,6 +3,7 @@ package project.musicwebsite.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.Censor;
 import project.musicwebsite.entity.ResponseObject;
@@ -14,26 +15,43 @@ public class CensorController {
     @Autowired
     CensorService censorService;
 
+
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("")
     ResponseEntity<ResponseObject> save(@RequestBody Censor censor) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         censorService.save(censor)
                 )
         );
     }
 
-    @GetMapping("")
-    ResponseEntity<ResponseObject> getAll() {
+    @GetMapping("/count")
+    ResponseEntity<ResponseObject> countCensor(
+    ) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
-                        censorService.getAll()
+                        censorService.getTotalCensor()
+                )
+        );
+    }
+    @GetMapping("")
+    ResponseEntity<ResponseObject> searchAllByName(
+            @RequestParam(name = "name", defaultValue = "") String name
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(
+                        "ok",
+                        "FINDING SUCCESS",
+                        censorService.searchAllByName(name)
                 )
         );
     }
@@ -43,7 +61,7 @@ public class CensorController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         censorService.findById(id)
                 )
@@ -54,7 +72,7 @@ public class CensorController {
     ResponseEntity<ResponseObject> update(@RequestBody Censor censor) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         censorService.update( censor)
                 )
@@ -66,7 +84,7 @@ public class CensorController {
         censorService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         "{}"
                 )

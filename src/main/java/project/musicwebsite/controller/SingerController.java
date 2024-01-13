@@ -2,6 +2,7 @@ package project.musicwebsite.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.musicwebsite.entity.ResponseObject;
@@ -51,7 +52,6 @@ public class SingerController {
         else {
             singers = singerService.searchByNameOrNickName(name,status);
         }
-
         return ResponseEntity.ok(
                 new ResponseObject("ok", "SUCCESS",
                        singers)
@@ -67,7 +67,7 @@ public class SingerController {
     }
 
     @PutMapping("")
-    ResponseEntity<ResponseObject> updateById(
+    ResponseEntity<ResponseObject> update(
             @Valid @RequestBody Singer singer) {
         Singer BSinger1 = singerService.update(singer);
         return ResponseEntity.ok(
@@ -76,7 +76,7 @@ public class SingerController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseObject> deleteById(@PathVariable Long id) {
+    ResponseEntity<ResponseObject> delete(@PathVariable Long id) {
         singerService.delete(id);
         return ResponseEntity.ok(
                 new ResponseObject("ok", "SUCCESS", "{}")
@@ -106,6 +106,14 @@ public class SingerController {
         );
     }
 
+    @GetMapping("/{id}/follower/count")
+    ResponseEntity<ResponseObject> countAllFollower(@PathVariable Long id) {
+        List<User> list = singerService.findAllFollower(id);
+        return ResponseEntity.ok(
+                new ResponseObject("ok", "ALL FOLLOWERS", list)
+        );
+    }
+
     @PostMapping("/patch")
     ResponseEntity<ResponseObject> savePatchSinger(@RequestBody List<Singer> singers) {
         List<Singer> list = singerService.addPatch(singers);
@@ -114,5 +122,27 @@ public class SingerController {
         );
     }
 
+    @GetMapping("/top/{top}")
+    ResponseEntity<ResponseObject> getTopTenSingerByFollowers(
+            @PathVariable Long top
+    ) {
+//        List<Singer> list = singerService.addPatch(singers);
+        return ResponseEntity.ok(
+                new ResponseObject("ok", "SUCCESS", singerService.getTopTenSingerByFollowers(top))
+        );
+    }
+
+    @GetMapping("/count")
+    ResponseEntity<ResponseObject> countSinger(
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(
+                        "OK",
+                        "FINDING SUCCESS",
+                        singerService.getTotalSinger()
+                )
+        );
+    }
 }
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Admin;
 import project.musicwebsite.exception.BadRequestException;
+import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.repositories.AdminRepository;
 import project.musicwebsite.repositories.UserRepository;
 import project.musicwebsite.service.i.IAdminController;
@@ -15,6 +16,8 @@ public class AdminService implements IAdminController {
     AdminRepository adminRepository;
     @Autowired
     UserRepository userRepository;
+
+
     @Override
     public Admin save(Admin admin) {
         if(userRepository.existsUsersByEmail(admin.getEmail())){
@@ -26,5 +29,12 @@ public class AdminService implements IAdminController {
     @Override
     public boolean isExisted(String email) {
         return adminRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Admin getById(Long id) {
+        return adminRepository.findById(id).orElseThrow(
+                ()->new  NotFoundException("Not exist")
+        );
     }
 }

@@ -18,65 +18,66 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
-    @PostMapping("/user/login")
+    @PostMapping("/login/user")
     public ResponseEntity<ResponseObject> login(@RequestBody
                                                 LoginRequest loginRequest) {
         System.out.println("access");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.attemptLogin(loginRequest.getUsername(),
                                         loginRequest.getPassword()))
                 );
     }
 
-    @PostMapping("/user/register")
+    @PostMapping("/register/user")
     public ResponseEntity<ResponseObject> userRegister(@RequestBody @Validated
                                                        User user) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.userRegister(user))
                 );
     }
 
-    @PostMapping("/singer/register")
+    @PostMapping("/register/singer")
     public ResponseEntity<ResponseObject> singerRegister(@RequestBody @Validated
                                                          Singer singer) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.singerRegister(singer))
                 );
     }
 
-    @PostMapping("/censor/register")
+    @PostMapping("/register/censor")
     public ResponseEntity<ResponseObject> singerRegister(@RequestBody @Validated
                                                          Censor censor) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.censorRegister(censor))
                 );
     }
 
-    @PostMapping("/admin/login")
+    @PostMapping("/login/admin")
     public ResponseEntity<ResponseObject> adminLogin(@RequestBody @Validated
                                                      LoginRequest admin) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.adminLogin(admin.getUsername(), admin.getPassword())
                         )
                 );
     }
-    @PostMapping("/admin/register")
+    @PostMapping("/register/admin")
     public ResponseEntity<ResponseObject> adminRegister(@RequestBody @Validated
                                                      Admin admin) {
+        System.out.println("222");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ResponseObject("Success", "ok",
+                        new ResponseObject("ok", "Success",
                                 authService.adminRegister(admin)
                         )
                 );

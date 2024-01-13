@@ -2,7 +2,9 @@ package project.musicwebsite.service.i;
 
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
+import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.SingerDTO;
+import project.musicwebsite.model.dto.TopTenSingerDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +26,7 @@ public interface ISingerService  {
 
 //    List<Singer> searchByNickName(String name);
 
+    List<TopTenSingerDTO> getTopTenSingerByFollowers(Long top);
+
+    public List<ChartDTO> getChartInforInTimePeriod(Long time);
 }

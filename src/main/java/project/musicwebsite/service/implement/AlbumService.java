@@ -34,7 +34,6 @@ public class AlbumService implements IAlbumService {
 
     @Override
     public Album save( Album album) {
-
         return albumRepository.save(album);
     }
 
@@ -131,7 +130,12 @@ public class AlbumService implements IAlbumService {
     }
 
     @Override
-    public Long getTotalAlbum() {
+    public Long count() {
         return albumRepository.count();
+    }
+
+    @Override
+    public Long countBySingerId() {
+        return null;
     }
 }

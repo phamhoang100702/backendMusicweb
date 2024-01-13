@@ -48,7 +48,8 @@ public class AuthService {
             User user = userRepository.findByEmail(email).orElseThrow(
                     ()->new NotFoundException("This account is not existed")
             );
-            if(user.getRole()!=0) throw new BadRequestException("You dont have permission");
+            System.out.println(email);
+            if(user.getRole()!=0 && user.getRole()!=4) throw new BadRequestException("You dont have permission");
             var authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
             );
@@ -62,8 +63,11 @@ public class AuthService {
                     )
                     .build()
             );
+            System.out.println(principal.getAuthorities().toString());
             return LoginDTO.builder()
                     .token(token)
+                    .userId(principal.getId())
+                    .roles(principal.getAuthorities().toString())
                     .build();
         }catch (Exception e){
             throw new BadRequestException("Wrong username or password");
@@ -84,8 +88,12 @@ public class AuthService {
                             map(GrantedAuthority::getAuthority).toList())
                     .build()
             );
+            System.out.println("id : " + principal.getId());
+            System.out.println("role: " + principal.getAuthorities());
             return LoginDTO.builder()
                     .token(token)
+                    .userId(principal.getId())
+                    .roles(principal.getAuthorities().toString())
                     .build();
         } catch (Exception e) {
             throw new BadRequestException("Wrong username or password");

@@ -3,7 +3,6 @@ package project.musicwebsite.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import project.musicwebsite.exception.BadRequestException;
 
 import java.util.ArrayList;
@@ -40,8 +39,7 @@ public class Song extends AbstractModel {
     private List<Category> categories = new LinkedList<>();
 
     @Column(nullable = true)
-    @JsonIgnore
-    private String avartar;
+    private String avatar;
 
     public Song() {
         super();
@@ -68,7 +66,7 @@ public class Song extends AbstractModel {
             fetch = FetchType.EAGER
     )
     @JoinColumn(name = "creatorId", nullable = true)
-    @JsonIgnore
+//    @JsonIgnore
     private User creator;
 
 
@@ -120,6 +118,7 @@ public class Song extends AbstractModel {
 
     public void removeCategory(Category category){
         if(!this.categories.contains(category)) throw  new BadRequestException("This category is not exited");
+
         this.categories.remove(category);
         category.getSongList().remove(this);
     }

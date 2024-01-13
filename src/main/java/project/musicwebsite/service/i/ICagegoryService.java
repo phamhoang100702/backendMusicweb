@@ -15,4 +15,5 @@ public interface ICagegoryService {
     public Category save(Category category);
 
     public Category findById(Long id);
+    public Long count();
 }

@@ -5,4 +5,6 @@ import project.musicwebsite.entity.Admin;
 public interface IAdminController {
     Admin save(Admin admin);
     boolean isExisted(String email);
+
+    Admin getById(Long id);
 }

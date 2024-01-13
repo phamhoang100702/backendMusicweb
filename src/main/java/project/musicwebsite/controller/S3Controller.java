@@ -34,7 +34,7 @@ public class S3Controller {
     final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<ResponseObject> upFile(@RequestParam(name = "sound",required = true) MultipartFile sound,
+    ResponseEntity<ResponseObject> upFile(@RequestParam(name = "sound",required = false) MultipartFile sound,
                                           @RequestParam(name = "lyric", required = false) MultipartFile lyric,
                                           @RequestParam(name = "avatar", required = false) MultipartFile avatar) {
         try {
@@ -62,7 +62,7 @@ public class S3Controller {
             }
             if(avatar!=null){
                 String avatarExtension = handleFile.fileExtension(avatar);
-                avatarFile = "song/image/" + name + "." + avatarExtension;
+                avatarFile = "song/avatars/" + name + "." + avatarExtension;
                 String url3 = path + avatarFile;
                 s3Service.putObject(this.s3Bucket.getName(), avatarFile, avatar.getBytes());
                 urls.put("avatar",url3);
@@ -144,10 +144,10 @@ public class S3Controller {
         }
     }
 
-    @PostMapping("/image")
-    ResponseEntity<ResponseObject> upImages(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/avatar")
+    ResponseEntity<ResponseObject> upImages(@RequestParam(value = "avatar",required = false) MultipartFile file) {
         String name = handleFile.storeFileImages(file);
-        String pathImages = "Image/" + name;
+        String pathImages = "Avatar/" + name;
         String url = path + pathImages;
         try {
             s3Service.putObject(this.s3Bucket.getName(), pathImages, file.getBytes());

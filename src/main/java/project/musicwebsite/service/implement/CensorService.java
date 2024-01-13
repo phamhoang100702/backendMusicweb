@@ -1,6 +1,7 @@
 package project.musicwebsite.service.implement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Censor;
 import project.musicwebsite.entity.User;
@@ -19,11 +20,15 @@ public class CensorService implements ICensorService {
     CensorRepository censorRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public Censor save(Censor censor) {
         Optional<User> user = userRepository.findByEmail(censor.getEmail());
         if (user.isPresent()) throw new BadRequestException("This email is existed");
+        String password = passwordEncoder.encode(censor.getPassword());
+        censor.setPassword(password);
         return censorRepository.save(censor);
     }
 
@@ -41,11 +46,17 @@ public class CensorService implements ICensorService {
     }
 
     @Override
+    public List<Censor> searchAllByName(String name) {
+        name = name.toLowerCase();
+        List<Censor> list = censorRepository.searchAllByName(name);
+        return list;
+    }
+
+    @Override
     public Censor update(Censor censor) {
         return censorRepository.findById(censor.getId())
                 .map(censor1 -> {
                     censor1.setAddress(censor.getAddress());
-                    censor1.setBirth(censor.getBirth());
                     censor1.setName(censor.getName());
                     censor1.setPhone(censor.getPhone());
                     censor1.setStatus(censor.getStatus());
@@ -62,7 +73,7 @@ public class CensorService implements ICensorService {
     }
 
     @Override
-    public Long count() {
+    public Long getTotalCensor() {
         return censorRepository.count();
     }
 }

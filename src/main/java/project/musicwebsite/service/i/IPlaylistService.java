@@ -24,7 +24,17 @@ public interface IPlaylistService {
 
     List<Song> getAllSongByPlaylist(Long id);
 
-    List<Playlist> searchAllPlaylistNameForUser(String name);
+    List<Playlist> searchAllPlaylistByNameForUser(String name);
+
+    List<Playlist> searchAllMainPlaylist(String name);
+
     List<Playlist> getAllMainpagePlaylist();
+    Long count();
+
+    Playlist saveSongsToPlaylist(Long playlistId,Long []arr);
+
+    Playlist addSongToFavoritePlaylist(Long userId,Long songId);
+
+    Playlist removeSongFromFavoritePlaylist(Long userId,Long songId);
 
 }

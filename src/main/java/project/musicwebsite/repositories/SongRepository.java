@@ -6,19 +6,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Category;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface SongRepository extends JpaRepository<Song, Long> {
 
-    @Query("SELECT s FROM Song s WHERE s.name LIKE %:name%")
+    @Query("SELECT s FROM Song s WHERE lower(s.name) LIKE %:name%")
     List<Song> searchByName(@Param("name") String name);
 
-    @Query("SELECT s FROM Song s WHERE s.name LIKE %:name% and s.status=:status")
+    @Query("SELECT s FROM Song s WHERE lower(s.name) LIKE %:name% and s.status=:status")
     List<Song> searchByName(@Param("name") String name,
                             @Param("status") Integer status);
 
@@ -38,23 +40,24 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
 
     @Query(
-            value = "SELECT other.song_id from song_singer other  where other.singer_id=?1",
+            value = "SELECT * from songtbl other  where other.creatorid=?1",
             nativeQuery = true
     )
-    List<Long> findSongBySingerId(Long singerId);
+    List<Song> findSongByCreatorId(Long singerId);
 
     @Query(
-            value = "SELECT * FROM Songtbl song WHERE name LIKE %:name% OFFSET :offset LIMIT :limit",
+            value = "SELECT * FROM Songtbl song WHERE LOWER(name) LIKE %:name% OFFSET :offset LIMIT :limit",
             nativeQuery = true
     )
     List<Song> searchAllByName(@Param("name") String name, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
-    @Query(value = "SELECT COUNT(*) FROM Song WHERE name LIKE %:name%")
+    @Query(value = "SELECT COUNT(*) FROM Song WHERE lower(name) LIKE %:name%")
     long countByName(@Param("name") String name);
 
     default Page<Song> searchAllByNameAsPage(String name, int offset, int limit) {
         // Limit to 10 records
         List<Song> resultList = searchAllByName(name, offset, limit);
+
         long totalCount = countByName(name);
 
         return new PageImpl<>(resultList, PageRequest.of(offset / limit, limit), totalCount);
@@ -65,6 +68,13 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song>  findAllBySingersContaining(Singer singer);
 
     List<Song> findAllByCategoriesContaining(Category category);
+
+
+    @Query(
+            value = "Select count(id),createdDate from Song where createdDate >= :date " +
+                    "group by createdDate"
+    )
+    List<Object[]> getInfoInTimePeriod(@RequestParam(name = "date") Date date);
 
 }
 

@@ -3,32 +3,35 @@ package project.musicwebsite.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Singer;
-import project.musicwebsite.entity.User;
 
+import java.util.Date;
 import java.util.List;
 
-public interface SingerRepository extends JpaRepository<Singer,Long> {
+public interface SingerRepository extends JpaRepository<Singer, Long> {
     @Query(
-           value = "select followers.user_id From Followertbl followers where followers.singer_id=?1",
+            value = "select followers.user_id From Followertbl followers where followers.singer_id=?1",
             nativeQuery = true
     )
     List<Long> findFollowersBySingerId(Long singer_id);
 
     List<Singer> searchAllByName(String name);
-//    List<Singer> searchAllByNameOrNickName(String name,String nickName);
+
+    //    List<Singer> searchAllByNameOrNickName(String name,String nickName);
     List<Singer> searchAllByStatus(Boolean status);
-    @Query(
-            value = "Select singer From Singer singer Where singer.name like %:name% " +
-                    "or singer.nickName like %:nickName% "
-    )
-     List<Singer> searchByNameOrNickName(
-             @Param("name") String name,
-             @Param("nickName") String nickName);
 
     @Query(
-            value = "Select singer From Singer singer Where (singer.name like %:name% " +
-                    "or singer.nickName like %:nickName% ) and singer.status=:status"
+            value = "Select singer From Singer singer Where lower( singer.name) like %:name% " +
+                    "or lower(singer.nickName) like %:nickName% "
+    )
+    List<Singer> searchByNameOrNickName(
+            @Param("name") String name,
+            @Param("nickName") String nickName);
+
+    @Query(
+            value = "Select singer From Singer singer Where (lower( singer.name) like %:name% " +
+                    "or lower(singer.nickName) like %:nickName% ) and singer.status=:status"
     )
     List<Singer> searchByNameOrNickName(
             @Param("name") String name,
@@ -38,15 +41,33 @@ public interface SingerRepository extends JpaRepository<Singer,Long> {
 
     @Query(
             value = "select singer from Singer singer" +
-                    " where singer.nickName like %:nickName%"
+                    " where lower(singer.nickName) like %:nickName%"
     )
     List<Singer> searchAllByNickName(String nickName);
 
     @Query(
             value = "select singer from Singer singer" +
-                    " where singer.nickName like %:nickName% " +
+                    " where lower(singer.nickName)like %:nickName% " +
                     "and singer.status=:status"
     )
     List<Singer> searchAllByNickNameAndStatus(@Param("nickName") String nickName,
                                               @Param("status") Boolean status);
+
+    @Query(
+            value = "select  count(fl.user_id) as followers,singer.id,singer.name,singer.nickname,singer.avatar " +
+                    " from Followertbl fl,usertbl singer" +
+                    " where singer.id = fl.singer_id and singer.status=true " +
+                    " group by  singer.id order by followers desc " +
+                    "limit :top ",
+            nativeQuery = true
+    )
+    List<Object[]> searchTopTenSingerByFollower(
+            @Param("top") Long top
+    );
+
+    @Query(
+            value = "Select count(id),createdDate from Singer where createdDate >= :date " +
+                    "group by createdDate"
+    )
+    List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
 }

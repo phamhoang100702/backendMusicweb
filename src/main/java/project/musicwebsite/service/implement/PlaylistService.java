@@ -94,8 +94,10 @@ public class PlaylistService implements IPlaylistService {
         List<Long> list = playlistRepository.findAllSongPlaylist(id);
         if (list.isEmpty()) throw new NoContentException("List empty");
         List<Song> songs = new LinkedList<>();
+
         for (Long id1 : list) {
-            Optional<Song> song = songRepository.findById(id);
+            System.out.println(id1);
+            Optional<Song> song = songRepository.findById(id1);
             if (song.isEmpty()) throw new NotFoundException("Song is not existed");
             songs.add(song.get());
         }
@@ -103,12 +105,60 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public List<Playlist> searchAllPlaylistNameForUser(String name) {
+    public List<Playlist> searchAllPlaylistByNameForUser(String name) {
+        name=name.toLowerCase();
         return playlistRepository.searchAllPlaylistByNameForUser(name);
+    }
+
+    @Override
+    public List<Playlist> searchAllMainPlaylist(String name) {
+        name=name.toLowerCase();
+        return playlistRepository.searchAllMainPagePlaylistByName(name);
     }
 
     @Override
     public List<Playlist> getAllMainpagePlaylist() {
         return playlistRepository.getAllMainpagePlaylist();
+    }
+
+    @Override
+    public Long count() {
+        return playlistRepository.count();
+    }
+
+    @Override
+    public Playlist saveSongsToPlaylist(Long playlistId,Long[] arr) {
+        List<Song> songs = new LinkedList<>();
+        for (Long id : arr){
+            Song song = new Song();
+            if(songRepository.findById(id).isEmpty()){
+                continue;
+            }
+            song.setId(id);
+            songs.add(song);
+        }
+        return playlistRepository.findById(playlistId).map(playlist -> {
+            playlist.getSongs().addAll(songs);
+            return  playlistRepository.save(playlist);
+        }).orElseThrow(()->new NotFoundException("This playlist not exist"));
+
+    }
+
+    @Override
+    public Playlist addSongToFavoritePlaylist(Long userId, Long songId) {
+        Song song = songRepository.findById(songId).orElseThrow(()->new NotFoundException("This song is not existed"));
+        return playlistRepository.findFirstByUserId(userId).map(playlist -> {
+            playlist.addSong(song);
+            return  playlistRepository.save(playlist);
+        }).orElseThrow(()->new NotFoundException("This playlist is not existed"));
+    }
+
+    @Override
+    public Playlist removeSongFromFavoritePlaylist(Long userId, Long songId) {
+        Song song = songRepository.findById(songId).orElseThrow(()->new NotFoundException("This song is not existed"));
+        return playlistRepository.findFirstByUserId(userId).map(playlist -> {
+            playlist.removeSong(song);
+            return  playlistRepository.save(playlist);
+        }).orElseThrow(()->new NotFoundException("This playlist is not existed"));
     }
 }

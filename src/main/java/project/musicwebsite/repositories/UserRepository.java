@@ -35,8 +35,33 @@ public interface UserRepository extends JpaRepository<User,Long> {
 //    void switchToPremium(Long id, Date date);
     @Query(
             value = "select  user from User user where " +
-                    "user.name like %:name% order by user.id asc"
+                    "lower(user.name) like %:name% " +
+                    "and user.role=1 " +
+                    "order by user.id asc"
     )
     List<User> searchAllByName(
             @RequestParam(name = "name") String name);
+
+//    @Query(
+//            value = "select count(ss.song_id) as total , ss.singer_id from song_singer ss " +
+//                    "where ss.singer_id=:singer_id order by ",
+//            nativeQuery = true
+//    )
+//    Long countBySingerId(Long singerId);
+
+
+    @Override
+    @Query(
+            value = "select count(id) from User " +
+                    "where role=1"
+    )
+    long count();
+
+
+
+    @Query(
+            value = "Select count(id) as time,createdDate from User where createdDate >= :date " +
+                    "group by createdDate"
+    )
+    List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
 }

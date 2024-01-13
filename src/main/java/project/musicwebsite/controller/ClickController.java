@@ -72,4 +72,13 @@ public class ClickController {
                         clickService.countListensBySong(song))
         );
     }
+
+    @GetMapping("/count")
+    ResponseEntity<ResponseObject> getTotalListens() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok",
+                        "SAVE SUCCESS",
+                        clickService.count())
+        );
+    }
 }

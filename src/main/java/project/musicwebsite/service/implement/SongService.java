@@ -9,11 +9,13 @@ import project.musicwebsite.entity.*;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NoContentException;
 import project.musicwebsite.exception.NotFoundException;
+import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.SongDTO;
 import project.musicwebsite.model.mapper.SongMapper;
 import project.musicwebsite.repositories.*;
 import project.musicwebsite.service.i.ISongService;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +47,7 @@ public class SongService implements ISongService {
         if (singer.isEmpty()) throw new NotFoundException("SINGER IS NOT EXISTED");
         if (singer.get().getRole() != 3 && singer.get().getRole() != 0)
             throw new BadRequestException("U cant created song");
+        System.out.println("creator id :" + creator);
 
         Optional<Song> songOptional = songRepository.findByFileLyricOrFileSound(song.getFileLyric(), song.getFileSound());
         if (songOptional.isPresent()) throw new BadRequestException("SONG IS EXISTED");
@@ -60,7 +63,7 @@ public class SongService implements ISongService {
 
     @Override
     public List<Song> searchByName(String name) {
-
+        String name1 = name.toLowerCase();
         List<Song> list = songRepository.searchByName(name);
         return list;
     }
@@ -133,24 +136,36 @@ public class SongService implements ISongService {
         return album.get();
     }
 
+
+
+    public Album removeSongFromAlbum(Long albumId, Long songId) {
+        Optional<Album> album = albumRepository.findById(albumId);
+        if (album.isEmpty()) throw new NotFoundException("ALBUM NOT EXISTED");
+        Optional<Song> song = songRepository.findById(songId);
+        Singer singer = album.get().getSinger();
+        if (!singer.equals(song.get().getCreator())) throw new BadRequestException("YOU CAN ONLY ADD YOUR OWN SONGS");
+        song.map(song1 -> {
+            song1.setAlbum(null);
+            return songRepository.save(song1);
+        });
+        return album.get();
+    }
+
+
     @Override
-    public List<SongDTO> findSongBySingerId(Long singerId) {
-        List<Long> ids = songRepository.findSongBySingerId(singerId);
-        List<Song> songs = new LinkedList<>();
-        for (Long id : ids) {
-            songRepository.findById(id).map(song -> {
-                        songs.add(song);
-                        return song;
-                    }
-            ).orElseThrow(() -> new NotFoundException("SONG NOT EXISTED"));
-        }
-        if (songs.isEmpty()) throw new NoContentException("DONT HAVE ANY SONG");
-        return SongMapper.convertList(songs);
+    public List<Song> findSongByCreatorId(Long creatorId) {
+        List<Song> songs = songRepository.findSongByCreatorId(creatorId);
+        return songs;
     }
 
     @Override
     public Long getTotalSong() {
         return songRepository.count();
+    }
+
+    @Override
+    public Long countSongBySingerId(Long singerId) {
+        return null;
     }
 
     @Override
@@ -188,7 +203,8 @@ public class SongService implements ISongService {
     }
 
     public Page<Song> searchSongPage(String name, Integer pageNo, Integer pageSize) {
-        return this.songRepository.searchAllByNameAsPage(name, pageNo, pageSize);
+        String name1 = name.toLowerCase();
+        return this.songRepository.searchAllByNameAsPage(name1, pageNo, pageSize);
     }
 
     @Override
@@ -237,6 +253,7 @@ public class SongService implements ISongService {
     @Override
     public List<Song> findAllSongByNameAndCategoryAndSinger(
             String name, Long categoryId, Long singerId) {
+        name = name.toLowerCase();
         Category category;
         if (categoryId != null) {
             category = categoryRepository.findById(categoryId)
@@ -251,5 +268,21 @@ public class SongService implements ISongService {
         return songRepository.searchAllByNameOrCategoriesContainingOrSingersContaining(
                 name, category, singer
         );
+
+    }
+
+    @Override
+    public List<ChartDTO> getChartInforInTimePeriod(Long time) {
+        LocalDate date = LocalDate.now().minusDays(time);
+        List<ChartDTO> chartDTOS = new LinkedList<>();
+
+        List<Object[]> list = songRepository.getInfoInTimePeriod(java.sql.Date.valueOf(date));
+        for (Object[] objects : list) {
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setTimes((Long) objects[0]);
+            chartDTO.setDate((java.sql.Date) objects[1]);
+        }
+
+        return chartDTOS;
     }
 }

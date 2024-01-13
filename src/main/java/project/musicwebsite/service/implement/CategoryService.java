@@ -49,4 +49,9 @@ public class CategoryService implements ICagegoryService {
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
+
+    @Override
+    public Long count() {
+        return categoryRepository.count();
+    }
 }

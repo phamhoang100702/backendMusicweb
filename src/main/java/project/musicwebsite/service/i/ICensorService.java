@@ -9,9 +9,10 @@ public interface ICensorService {
     Censor save(Censor censor);
     Optional<Censor> findById(Long id);
     List<Censor> getAll();
+
+    List<Censor> searchAllByName(String name);
     Censor update(Censor censor);
 
     void delete(Long id);
-
-    Long count();
+    Long getTotalCensor();
 }
