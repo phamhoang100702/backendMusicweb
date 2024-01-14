@@ -28,5 +28,4 @@ public interface ISingerService  {
 
     List<TopTenSingerDTO> getTopTenSingerByFollowers(Long top);
 
-    public List<ChartDTO> getChartInforInTimePeriod(Long time);
 }

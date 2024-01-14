@@ -6,8 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Category;
+import project.musicwebsite.entity.Playlist;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
 
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface SongRepository extends JpaRepository<Song, Long> {
 
     @Query("SELECT s FROM Song s WHERE lower(s.name) LIKE %:name%")
@@ -71,10 +74,13 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
 
     @Query(
-            value = "Select count(id),createdDate from Song where createdDate >= :date " +
-                    "group by createdDate"
+            value = "Select count(id) as time,FORMAT(createdDate, 'dd/MM/yyyy') AS datecount from Song where createdDate >= :date " +
+                    "group by datecount"
     )
-    List<Object[]> getInfoInTimePeriod(@RequestParam(name = "date") Date date);
+    List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
+
+
+
 
 }
 

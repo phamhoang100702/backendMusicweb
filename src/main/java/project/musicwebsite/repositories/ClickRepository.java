@@ -3,6 +3,7 @@ package project.musicwebsite.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Click;
 import project.musicwebsite.entity.Song;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+@Transactional
 public interface ClickRepository extends JpaRepository<Click,Long> {
 
     @Query(
@@ -62,8 +64,8 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
     List<Long> findAllSongIdByUserId(Long userId);
 
     @Query(
-            value = "Select count(id) as times,createdDate from Click where createdDate >= :date " +
-                    "group by createdDate"
+            value = "Select count(id) as time,FORMAT(createdDate, 'dd/MM/yyyy') AS datecount from Click where createdDate >= :date " +
+                    "group by datecount"
     )
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
 }

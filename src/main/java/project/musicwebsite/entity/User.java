@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import project.musicwebsite.exception.BadRequestException;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Data
@@ -58,29 +55,25 @@ public class User extends AbstractModel {
 
     private String avatar;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "followers"
-    )
-    @JsonIgnore
-    private List<Singer> singers = new LinkedList<>();
 
     @OneToMany(
-            mappedBy = "creator",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            mappedBy = "user"
     )
     @JsonIgnore
-    private List<Song> songs;
+    private Set<Follower> followers = new TreeSet<>();
+
+
 
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            targetEntity = Click.class
     )
     @JsonIgnore
-    private List<Click> clicks = new LinkedList<>();
+    private Set<Click> clicks = new HashSet<>();
 
     public User(String createdBy, String modifiedBy, String name, String email, String password) {
         super(createdBy, modifiedBy);
@@ -100,14 +93,13 @@ public class User extends AbstractModel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email);
+        return this.id == user.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, email);
+        return Objects.hash(id);
     }
 
     public void addRole(Role role){

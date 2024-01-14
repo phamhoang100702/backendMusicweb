@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -23,5 +22,19 @@ public class Role extends AbstractModel{
             mappedBy = "roles"
     )
     @JsonIgnore
-    private List<User> users = new LinkedList<>();
+    private Set<User> users = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+        Role role = (Role) o;
+        return  this.id == role.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

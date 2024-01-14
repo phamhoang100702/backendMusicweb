@@ -7,9 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -40,7 +38,7 @@ public class Album extends AbstractModel{
             mappedBy = "album",
             fetch = FetchType.LAZY
     )
-    private List<Song> songs = new LinkedList<>();
+    private Set<Song> songs = new HashSet<>();
 
     public Album(String createdBy, String modifiedBy, String name, Date publish, String thumbnail) {
         super(createdBy, modifiedBy);
@@ -70,5 +68,16 @@ public class Album extends AbstractModel{
         this.publish = new Date();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Album album = (Album) o;
+        return album.id == this.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

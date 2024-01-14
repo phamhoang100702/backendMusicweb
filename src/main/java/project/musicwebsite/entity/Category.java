@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -22,5 +21,21 @@ public class Category extends AbstractModel{
             fetch = FetchType.LAZY,
             mappedBy = "categories")
     @JsonIgnore
-    private List<Song> songList = new LinkedList<>();
+    private Set<Song> songList = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        System.out.println("Di Qua day ");
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+        Category category = (Category) o;
+        return this.id == category.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

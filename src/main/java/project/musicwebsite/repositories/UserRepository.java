@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 
+
+@Transactional
 public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findByRole(int i);
@@ -60,8 +62,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
     @Query(
-            value = "Select count(id) as time,createdDate from User where createdDate >= :date " +
-                    "group by createdDate"
+            value = "Select count(id) as time,FORMAT(createdDate, 'dd/MM/yyyy') AS datecount from User where createdDate >= :date " +
+                    "group by datecount"
     )
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
+
+
+
 }

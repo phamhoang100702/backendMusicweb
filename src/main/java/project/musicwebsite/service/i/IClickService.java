@@ -25,6 +25,5 @@ public interface IClickService {
 
     Long count();
 
-    List<ChartDTO> getChartInforInTimePeriod(Long time);
 
 }

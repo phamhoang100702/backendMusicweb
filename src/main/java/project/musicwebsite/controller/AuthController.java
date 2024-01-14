@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/register/censor")
-    public ResponseEntity<ResponseObject> singerRegister(@RequestBody @Validated
+    public ResponseEntity<ResponseObject> censorRegister(@RequestBody @Validated
                                                          Censor censor) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(

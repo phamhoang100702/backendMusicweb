@@ -88,20 +88,7 @@ public class ClickService implements IClickService {
         return clickDTOS;
     }
 
-    @Override
-    public List<ChartDTO> getChartInforInTimePeriod(Long time) {
-        LocalDate date = LocalDate.now().minusDays(time);
-        List<ChartDTO> chartDTOS = new LinkedList<>();
 
-        List<Object[]> list = clickRepository.getChartInforInTimePeriod(Date.valueOf(date));
-        for (Object[] objects : list) {
-            ChartDTO chartDTO = new ChartDTO();
-            chartDTO.setTimes((Long) objects[0]);
-            chartDTO.setDate((Date) objects[1]);
-        }
-
-        return chartDTOS;
-    }
 
     @Override
     public List<ClickDTO> countListens() {

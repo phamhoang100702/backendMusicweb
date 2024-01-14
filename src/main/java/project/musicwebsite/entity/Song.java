@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import project.musicwebsite.exception.BadRequestException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -28,15 +25,29 @@ public class Song extends AbstractModel {
     @Column(nullable = true, unique = false)
     private String fileLyric;
 
+
     @ManyToMany(
             fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "song_category",
-            joinColumns = @JoinColumn(name = "song_id"),
-            inverseJoinColumns = @JoinColumn(name="category_id")
+            joinColumns = @JoinColumn(name = "song_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name="category_id",referencedColumnName = "id")
     )
-    private List<Category> categories = new LinkedList<>();
+    @JoinColumn(nullable = true)
+    private Set<Category> categories = new HashSet<>();
+
+
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "SingersOfSong",
+            joinColumns = @JoinColumn(name = "song_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "singer_id",referencedColumnName = "id")
+    )
+    @JoinColumn(nullable = true)
+    private Set<Singer> singers = new HashSet<>();
 
     @Column(nullable = true)
     private String avatar;
@@ -70,57 +81,72 @@ public class Song extends AbstractModel {
     private User creator;
 
 
-    @ManyToMany(
-            fetch = FetchType.EAGER
-    )
-    @JoinTable(
-            name = "song_singer",
-            joinColumns = @JoinColumn(name = "song_id"),
-            inverseJoinColumns = @JoinColumn(name = "singer_id")
-    )
-    @JoinColumn(nullable = true)
-    private List<Singer> singers = new LinkedList<>();
+
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "song",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            mappedBy = "song"
     )
     @JsonIgnore
-    private List<Click> clicks = new ArrayList<>();
+    private Set<Click> clicks = new HashSet<>();
 
 
-    @ManyToMany(
+    @OneToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "songs"
+            cascade = CascadeType.ALL,
+            mappedBy = "song"
     )
     @JsonIgnore
-    private List<Playlist> playlist = new LinkedList<>();
+    private Set<SongOfPlaylist> songOfPlaylists = new HashSet<>();
 
 
-    public void addSinger(Singer singer){
-        if(singers.contains(singer)) throw new BadRequestException("This singer is existed");
-        this.singers.add(singer);
-        singer.getSongs().add(this);
-    }
+//    @ManyToMany(
+//            fetch = FetchType.LAZY,
+////            cascade = CascadeType.,
+//            mappedBy = "songOfPlaylist"
+//    )
+//    @JsonIgnore
+//    private Set<Playlist> playlist = new HashSet<>();
 
-    public void removeSinger(Singer singer){
-        if(!singers.contains(singer)) throw new BadRequestException("This singer is not existed");
-        this.singers.remove(singer);
-        singer.getSongs().remove(this);
-    }
 
     public void addCategory(Category category){
-        if(this.categories.contains(category)) throw  new BadRequestException("This category is exited");
+        if(this.categories.contains(category)) return;
         this.categories.add(category);
         category.getSongList().add(this);
     }
 
     public void removeCategory(Category category){
-        if(!this.categories.contains(category)) throw  new BadRequestException("This category is not exited");
+        System.out.println("check 1  " + category.getId());
+        if(!this.categories.contains(category)) return;
 
         this.categories.remove(category);
         category.getSongList().remove(this);
     }
 
+    public void addSingerToSong(Singer singer){
+        if(this.singers.contains(singer)) return;;
+        this.singers.add(singer);
+        singer.getSongsOfSinger().add(this);
+    }
+
+    public void removeSingerFromSong(Singer singer){
+        if(!this.singers.contains(singer)) return;;
+        this.singers.remove(singer);
+        singer.getSongsOfSinger().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+        Song song = (Song) o;
+        return this.id == song.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

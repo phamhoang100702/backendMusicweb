@@ -61,6 +61,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> delete(@PathVariable Long id) {
+        System.out.println(id);
         userService.delete(id);
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "Delete success", "")
@@ -99,7 +100,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/count/date/{date}")
+    @GetMapping("/chart/date/{date}")
     ResponseEntity<ResponseObject> countByDate(@PathVariable Long date) {
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "success", userService.getChartInforInTimePeriod(date))

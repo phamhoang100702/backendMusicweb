@@ -9,6 +9,7 @@ import project.musicwebsite.entity.Singer;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class SongDTO {
     private int status;
     private String fileSong;
     private String fileLyric;
-    private List<Category> categories;
+    private Set<Category> categories;
+    private Set<Singer> singers;
 
 }

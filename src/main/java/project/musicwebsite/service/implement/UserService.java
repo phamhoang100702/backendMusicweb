@@ -3,19 +3,16 @@ package project.musicwebsite.service.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.musicwebsite.entity.Playlist;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.ChartDTO;
-import project.musicwebsite.model.dto.UserDTO;
-import project.musicwebsite.model.mapper.UserMapper;
 import project.musicwebsite.repositories.*;
 import project.musicwebsite.service.i.IUserService;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -26,7 +23,7 @@ public class UserService implements IUserService {
     @Autowired
     SingerRepository singerRepository;
 
-//    @Autowired
+    //    @Autowired
 //    PUserRepository pUserRepository;
     @Autowired
     RoleRepository roleRepository;
@@ -51,9 +48,9 @@ public class UserService implements IUserService {
         return user1;
     }
 
-    public List<User> searchAllUserByName(String name){
+    public List<User> searchAllUserByName(String name) {
         name = name.toLowerCase();
-        return  userRepository.searchAllByName(name);
+        return userRepository.searchAllByName(name);
     }
 
     @Override
@@ -72,7 +69,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User update( User user) {
+    public User update(User user) {
         Optional<User> userOptional = userRepository.findById(user.getId());
         return userOptional.map(user1 -> {
             user1.setName(user.getName());
@@ -88,7 +85,6 @@ public class UserService implements IUserService {
     public void delete(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) throw new NotFoundException("User dont exist");
-
         userRepository.deleteById(id);
     }
 
@@ -126,7 +122,7 @@ public class UserService implements IUserService {
     @Override
     public List<User> saveListUser(ArrayList<User> users) {
         List<User> list = new ArrayList<>();
-        for(User user :  users){
+        for (User user : users) {
             User u1 = save(user);
             list.add(u1);
         }
@@ -142,19 +138,74 @@ public class UserService implements IUserService {
     public List<ChartDTO> getChartInforInTimePeriod(Long time) {
         LocalDate date = LocalDate.now().minusDays(time);
         List<ChartDTO> chartDTOS = new LinkedList<>();
-
         List<Object[]> list = userRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
         List<Object[]> list1 = singerRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
-        List<Object[]> list2 = songRepository.getInfoInTimePeriod(java.sql.Date.valueOf(date));
+        List<Object[]> list2 = songRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
         List<Object[]> list3 = clickRepository.getChartInforInTimePeriod(java.sql.Date.valueOf(date));
-        Map<String,Integer> map = new TreeMap<>();
 
-
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Map<String, Long> map = new TreeMap<>();
+        for (long i = 0; i <= time; i++) {
+            String dt = date.plusDays(i).format(dateTimeFormatter);
+            map.put(dt, 0L);
+            System.out.println(dt);
+        }
         for (Object[] objects : list) {
             ChartDTO chartDTO = new ChartDTO();
-            Date date1 = (Date) objects[1];
-            System.out.println(date1);
-      }
+            Long times = (Long) objects[0];
+            map.put((String) objects[1], times);
+        }
+        map.forEach((key,value)->{
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setDate(key);
+            chartDTO.setTimes(value);
+            chartDTO.setType("USER");
+            chartDTOS.add(chartDTO);
+            map.put(key, 0L);
+        });
+
+        for (Object[] objects : list1) {
+            ChartDTO chartDTO = new ChartDTO();
+            Long times = (Long) objects[0];
+            map.put((String) objects[1], times);
+        }
+        map.forEach((key,value)->{
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setDate(key);
+            System.out.println(chartDTO.getDate());
+            chartDTO.setTimes(value);
+            chartDTO.setType("SINGER");
+            chartDTOS.add(chartDTO);
+            map.put(key, 0L);
+        });
+
+        for (Object[] objects : list2) {
+            ChartDTO chartDTO = new ChartDTO();
+            Long times = (Long) objects[0];
+            map.put((String) objects[1], times);
+        }
+        map.forEach((key,value)->{
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setDate(key);
+            chartDTO.setTimes(value);
+            chartDTO.setType("SONG");
+            chartDTOS.add(chartDTO);
+            map.put(key, 0L);
+        });
+
+        for (Object[] objects : list3) {
+            ChartDTO chartDTO = new ChartDTO();
+            Long times = (Long) objects[0];
+            map.put((String) objects[1], times);
+        }
+        map.forEach((key,value)->{
+            ChartDTO chartDTO = new ChartDTO();
+            chartDTO.setDate(key);
+            chartDTO.setTimes(value);
+            chartDTO.setType("LISTENS");
+            chartDTOS.add(chartDTO);
+            map.put(key, 0L);
+        });
 
         return chartDTOS;
     }

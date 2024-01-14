@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity
@@ -41,38 +40,35 @@ public class Playlist extends  AbstractModel{
     @JoinColumn(name = "creatorId",nullable = true)
     private User creator;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY
-    )
-    @JoinTable(
-            name="SongPlaylisttbl",
-            joinColumns = @JoinColumn(name="playlist_id"),
-            inverseJoinColumns = @JoinColumn(name="song_id")
+    @OneToMany(
+            mappedBy = "playlist",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = SongOfPlaylist.class
+
     )
     @JsonIgnore
-    private List<Song> songs = new LinkedList<>();
+    private Set<SongOfPlaylist> songOfPlaylist = new HashSet<>();
 
-    public void addSong(Song song){
-        this.songs.add(song);
-        song.getPlaylist().add(this);
-    }
 
-    public void removeSong(Song song){
-        this.songs.remove(song);
-        song.getPlaylist().remove(this);
-    }
+
 
 
     public boolean isExisted(Song song){
-        return this.songs.contains(song);
+        return this.songOfPlaylist.contains(song);
     }
 
-    public Playlist(String createdBy, String modifiedBy, User creator, String name, Boolean status, List<Song> songs) {
-        super(createdBy, modifiedBy);
-        this.creator = creator;
-        this.name = name;
-        this.status = status;
-        this.songs = songs;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Playlist playlist = (Playlist) o;
+        return this.id == playlist.id;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

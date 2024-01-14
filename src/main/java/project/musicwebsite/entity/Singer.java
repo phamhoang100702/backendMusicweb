@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity
@@ -26,44 +25,52 @@ public class Singer extends User {
        this.status = true;
    }
 
-    @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "Followertbl",
-            joinColumns = @JoinColumn(name = "singer_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @OneToMany(
+            mappedBy = "singer",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE
+    )
     @JsonIgnore
-    private List<User> followers = new LinkedList<>();
+    private Set<Follower> followers = new HashSet<>();
+
+
+    @OneToMany(
+            mappedBy = "creator",
+            fetch = FetchType.LAZY,
+            targetEntity = Song.class
+    )
+    @JsonIgnore
+    private Set<Song> songOfCreator = new HashSet<>();
 
     @ManyToMany(
             mappedBy = "singers",
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            targetEntity = Song.class
     )
     @JsonIgnore
-    private List<Song> songs = new LinkedList<>();
-
-    public void addFollower(User user) {
-        this.followers.add(user);
-        user.getSingers().add(this);
-
-    }
-
-    public void removeFollow(User user) {
-        this.followers.remove(user);
-        user.getSingers().remove(this);
-    }
-
-    public boolean existFollower(User user) {
-        return this.followers.contains(user);
-    }
+    private Set<Song> songsOfSinger = new HashSet<>();
 
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "singer"
+            mappedBy = "singer",
+            targetEntity = Album.class
     )
     @JsonIgnore
-    private List<Album> albums = new LinkedList<>();
+    private Set<Album> albums = new HashSet<>();
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+        Singer singer = (Singer) o;
+        return singer.getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

@@ -119,29 +119,6 @@ public class SongController {
 
     }
 
-    @PostMapping("/song/{id}/singer")
-    ResponseEntity<ResponseObject> saveSingerToSong(@PathVariable Long id,
-                                                    @RequestBody List<Singer> singers) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.saveSingersToSong(id, singers)
-                )
-        );
-
-    }
-
-    @DeleteMapping("/song/{id}/singer")
-    ResponseEntity<ResponseObject> removeSingerFromSong(@PathVariable Long id,
-                                                        @RequestBody List<Singer> singers) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.removeSingerFromSong(id, singers)
-                )
-        );
-
-    }
 
     @GetMapping(path = "/song/page")
     ResponseEntity<ResponseObject> searchByNamePage(
@@ -177,29 +154,10 @@ public class SongController {
     }
 
 
-    @PostMapping("/song/{id}/category")
-    ResponseEntity<ResponseObject> saveCategoryToSong(@PathVariable Long id,
-                                                      @RequestBody List<Category> categories) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.addCategoryToSong(id, categories)
-                )
-        );
 
-    }
 
 //    @PreAuthorize("hasAuthority('USER')")
-    @DeleteMapping("/song/{id}/category")
-    ResponseEntity<ResponseObject> removeCategoryFromSong(@PathVariable Long id,
-                                                          @RequestBody List<Category> categories) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.removeCategoryToSong(id, categories)
-                )
-        );
-    }
+
 
     @GetMapping("/song/count")
     ResponseEntity<ResponseObject> getTotalSong() {

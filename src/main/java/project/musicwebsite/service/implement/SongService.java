@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.musicwebsite.entity.*;
 import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NoContentException;
@@ -16,10 +17,7 @@ import project.musicwebsite.repositories.*;
 import project.musicwebsite.service.i.ISongService;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SongService implements ISongService {
@@ -30,20 +28,26 @@ public class SongService implements ISongService {
     private UserRepository userRepository;
     private PlaylistRepository playlistRepository;
     private CategoryRepository categoryRepository;
+    private SongOfPlaylistRepository songOfPlaylistRepository;
+
 
     @Autowired
-    public SongService(SongRepository songRepository, SingerRepository singerRepository, AlbumRepository albumRepository, UserRepository userRepository, PlaylistRepository playlistRepository, CategoryRepository categoryRepository) {
+    public SongService(SongRepository songRepository, SingerRepository singerRepository,
+                       AlbumRepository albumRepository, UserRepository userRepository,
+                       PlaylistRepository playlistRepository, CategoryRepository categoryRepository,
+                       SongOfPlaylistRepository songOfPlaylistRepository) {
         this.songRepository = songRepository;
         this.singerRepository = singerRepository;
         this.albumRepository = albumRepository;
         this.userRepository = userRepository;
         this.playlistRepository = playlistRepository;
         this.categoryRepository = categoryRepository;
+        this.songOfPlaylistRepository = songOfPlaylistRepository;
     }
 
     @Override
     public Song save(Long creator, Song song) {
-        Optional<User> singer = userRepository.findById(creator);
+        Optional<Singer> singer = singerRepository.findById(creator);
         if (singer.isEmpty()) throw new NotFoundException("SINGER IS NOT EXISTED");
         if (singer.get().getRole() != 3 && singer.get().getRole() != 0)
             throw new BadRequestException("U cant created song");
@@ -80,6 +84,7 @@ public class SongService implements ISongService {
     }
 
     @Override
+    @Transactional
     public Song update(Song song) {
         return songRepository.findById(song.getId())
                 .map(song1 -> {
@@ -88,38 +93,50 @@ public class SongService implements ISongService {
                     song1.setCategories(song.getCategories());
                     song1.setFileSound(song.getFileSound());
                     song1.setModifiedDate(new Date());
+                    song1.setSingers(song.getSingers());
                     return songRepository.save(song1);
                 }).orElseThrow(() -> new NotFoundException("Song not existed"));
     }
 
     @Override
     public Playlist saveSongToPlaylist(Long songId, Long playlistId) {
-        Optional<Song> song = songRepository.findById(songId);
-        if (song.isEmpty()) throw new NotFoundException("This song is not existed");
-        return playlistRepository.findById(playlistId)
-                .map(playlist -> {
-                    playlist.addSong(song.get());
-                    return playlistRepository.save(playlist);
-                }).orElseThrow(() -> new NotFoundException("This playlist is not existed"));
+        Song song = songRepository.findById(songId).orElseThrow(
+                ()->new NotFoundException("This song is not existed")
+        );
+        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
+                ()->new NotFoundException("This playlist is not existed")
+        );
+        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
+        songOfPlaylist.setPlaylist(playlist);
+        songOfPlaylist.setSong(song);
+        songOfPlaylistRepository.save(songOfPlaylist);
+        return  playlist;
     }
 
     @Override
     public Playlist removeSongFromPlaylist(Long songId, Long playlistId) {
-        Optional<Song> song = songRepository.findById(songId);
-        if (song.isEmpty()) throw new NotFoundException("This song is not existed");
-        return playlistRepository.findById(playlistId)
-                .map(playlist -> {
-                    playlist.removeSong(song.get());
-                    return playlistRepository.save(playlist);
-                }).orElseThrow(() -> new NotFoundException("This playlist is not existed"));
+        Song song = songRepository.findById(songId).orElseThrow(
+                ()->new NotFoundException("This song is not existed")
+        );
+        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
+                ()->new NotFoundException("This playlist is not existed")
+        );
+        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
+        songOfPlaylist.setPlaylist(playlist);
+        songOfPlaylist.setSong(song);
+        songOfPlaylistRepository.delete(songOfPlaylist);
+        return  playlist;
     }
 
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        Optional<Song> optionalSong = songRepository.findById(id);
-        if (optionalSong.isEmpty()) throw new NotFoundException("SONG NOT EXISTED");
-        songRepository.deleteById(id);
+        System.out.println("id need Delete" + id);
+        Song song = songRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("This song is not existed"));
+//        song.get
+        songRepository.delete(song);
     }
 
     @Override
@@ -168,26 +185,8 @@ public class SongService implements ISongService {
         return null;
     }
 
-    @Override
-    public Song saveSingersToSong(Long songId, List<Singer> singers) {
 
-        return songRepository.findById(songId).map(song -> {
-            for (Singer singer : singers) {
-                song.addSinger(singer);
-            }
-            return songRepository.save(song);
-        }).orElseThrow(() -> new NotFoundException("This song is not existed"));
-    }
 
-    @Override
-    public Song removeSingerFromSong(Long songId, List<Singer> singers) {
-        return songRepository.findById(songId).map(song -> {
-            for (Singer singer : singers) {
-                song.removeSinger(singer);
-            }
-            return songRepository.save(song);
-        }).orElseThrow(() -> new NotFoundException("This song is not existed"));
-    }
 
     public List<Song> saveListSong(List<Song> songs) {
         return songRepository.saveAll(songs);
@@ -207,25 +206,8 @@ public class SongService implements ISongService {
         return this.songRepository.searchAllByNameAsPage(name1, pageNo, pageSize);
     }
 
-    @Override
-    public Song addCategoryToSong(Long songId, List<Category> categories) {
-        return songRepository.findById(songId).map(song -> {
-            for (Category category : categories) {
-                song.addCategory(category);
-            }
-            return songRepository.save(song);
-        }).orElseThrow(() -> new NotFoundException("This song is not existed"));
-    }
 
-    @Override
-    public Song removeCategoryToSong(Long songId, List<Category> categories) {
-        return songRepository.findById(songId).map(song -> {
-            for (Category category : categories) {
-                song.removeCategory(category);
-            }
-            return songRepository.save(song);
-        }).orElseThrow(() -> new NotFoundException("This song is not existed"));
-    }
+
 
     @Override
     public Song save(Song song) {
@@ -271,18 +253,5 @@ public class SongService implements ISongService {
 
     }
 
-    @Override
-    public List<ChartDTO> getChartInforInTimePeriod(Long time) {
-        LocalDate date = LocalDate.now().minusDays(time);
-        List<ChartDTO> chartDTOS = new LinkedList<>();
 
-        List<Object[]> list = songRepository.getInfoInTimePeriod(java.sql.Date.valueOf(date));
-        for (Object[] objects : list) {
-            ChartDTO chartDTO = new ChartDTO();
-            chartDTO.setTimes((Long) objects[0]);
-            chartDTO.setDate((java.sql.Date) objects[1]);
-        }
-
-        return chartDTOS;
-    }
 }

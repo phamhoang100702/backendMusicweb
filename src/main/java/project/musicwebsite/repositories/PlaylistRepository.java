@@ -3,12 +3,14 @@ package project.musicwebsite.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Playlist;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface PlaylistRepository extends JpaRepository<Playlist,Long> {
 
     @Query(
@@ -16,7 +18,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist,Long> {
                     "role = 'FAVORITE' limit 1",
             nativeQuery = true
     )
-    Optional<Playlist> findFirstByUserId(
+    Optional<Playlist> findFavoritePlaylistForUserByUserId(
             @RequestParam(name = "id") Long id);
     @Query(
             value="SELECT *From Playlisttbl playlist where playlist.creatorId = ?1  and role != 'FAVORITE' " +
@@ -25,11 +27,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist,Long> {
     )
     List<Playlist> findPlaylistByUserId(Long id);
 
-    @Query(
-            value="SELECT playlist.song_id From SongPlaylisttbl playlist where playlist.playlist_id = ?1",
-            nativeQuery = true
-    )
-    List<Long> findAllSongPlaylist(Long id);
+
 
     @Query(
             value = "select playlist from Playlist playlist " +

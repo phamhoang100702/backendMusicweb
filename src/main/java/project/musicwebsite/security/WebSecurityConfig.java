@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(registry -> registry
                         .requestMatchers("/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();
@@ -69,7 +69,7 @@ public class WebSecurityConfig {
                         .allowedOrigins("http://localhost:9100", "http://localhost:9200", "http://localhost:9300")
                         .allowedHeaders("Authorization", "Content-Type")
                         .exposedHeaders("Authorization")
-                        .allowCredentials(true);
+                        .allowCredentials(false);
                 WebMvcConfigurer.super.addCorsMappings(registry);
             }
         };

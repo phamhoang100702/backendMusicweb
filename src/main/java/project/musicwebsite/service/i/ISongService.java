@@ -22,12 +22,7 @@ public interface ISongService {
     Long getTotalSong();
     Long countSongBySingerId(Long singerId);
 
-    Song saveSingersToSong(Long songId, List<Singer> singers);
-    Song removeSingerFromSong(Long songId, List<Singer> singers);
 
-    Song addCategoryToSong(Long songId, List<Category> categories);
-
-    Song removeCategoryToSong(Long songId, List<Category> categories);
 
     Song save(Song song);
 
@@ -36,7 +31,6 @@ public interface ISongService {
     List<Song> getSongsBySingerId(Long singerId);
 
 
-    public List<ChartDTO> getChartInforInTimePeriod(Long time);
     List<Song> findAllSongByNameAndCategoryAndSinger(
             String name,
             Long  categoryId,

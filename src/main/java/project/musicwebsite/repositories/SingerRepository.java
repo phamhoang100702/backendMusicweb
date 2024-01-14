@@ -1,14 +1,18 @@
 package project.musicwebsite.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Singer;
 
 import java.util.Date;
 import java.util.List;
 
+@Transactional
 public interface SingerRepository extends JpaRepository<Singer, Long> {
     @Query(
             value = "select followers.user_id From Followertbl followers where followers.singer_id=?1",
@@ -66,8 +70,18 @@ public interface SingerRepository extends JpaRepository<Singer, Long> {
     );
 
     @Query(
-            value = "Select count(id),createdDate from Singer where createdDate >= :date " +
-                    "group by createdDate"
+            value = "Select count(id) as time,FORMAT(createdDate, 'dd/MM/yyyy') AS datecount from Singer where createdDate >= :date " +
+                    "group by datecount"
     )
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
+
+    @Transactional
+    @Modifying
+    @Query(
+            value = "Delete from singersofsong where singer_id=:singerId"
+            ,nativeQuery = true
+    )
+    void deleteAllSingerOfSongBySingerId(
+            @RequestParam(name = "singerId") Long singerId
+    );
 }
