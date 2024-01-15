@@ -33,11 +33,11 @@ public class S3Controller {
 
     final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
 
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "", consumes = MediaType.ALL_VALUE)
     ResponseEntity<ResponseObject> upFile(@RequestParam(name = "sound",required = false) MultipartFile sound,
                                           @RequestParam(name = "lyric", required = false) MultipartFile lyric,
-                                          @RequestParam(name = "avatar", required = false) MultipartFile avatar) {
-        try {
+                                          @RequestParam(name = "avatar", required = false) MultipartFile avatar) throws Exception   {
+        System.out.println("ok");
 
             String name = handleFile.generatedName();
             String songFile, lyricFile, avatarFile;
@@ -46,21 +46,22 @@ public class S3Controller {
             urls.put("lyric","");
             urls.put("avatar","");
 
-            if(!sound.isEmpty()){
+            if(sound != null && handleFile.isSoundFile(sound)){
+
                 String soundExtension = handleFile.fileExtension(sound);
                 songFile = "song/sounds/" + name + "." + soundExtension;
                 s3Service.putObject(this.s3Bucket.getName(), songFile, sound.getBytes());
                 String url1 = path + songFile;
                 urls.put("sound",url1);
             }
-            if ( lyric!=null) {
+            if ( lyric!=null && handleFile.isLyricFile(lyric)) {
                 String lyricExtension = handleFile.fileExtension(lyric);
                 lyricFile = "song/lyrics/" + name + "." + lyricExtension;
                 s3Service.putObject(this.s3Bucket.getName(), lyricFile, lyric.getBytes());
                 String url2 = path + lyricFile;
                 urls.put("lyric",url2);
             }
-            if(avatar!=null){
+            if(avatar!=null && handleFile.isImageFile(avatar)){
                 String avatarExtension = handleFile.fileExtension(avatar);
                 avatarFile = "song/avatars/" + name + "." + avatarExtension;
                 String url3 = path + avatarFile;
@@ -70,9 +71,7 @@ public class S3Controller {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("Ok", "success", urls)
             );
-        } catch (Exception e) {
-            throw new FileUploadIoException("File is not acceptable");
-        }
+
     }
 
     @PostMapping(value = "/sound", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

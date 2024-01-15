@@ -37,9 +37,9 @@ public class SongController {
     }
 
     @PutMapping(path = "/song")
-    ResponseEntity<ResponseObject> update( @RequestBody Song song) {
+    ResponseEntity<ResponseObject> update(@RequestBody Song song) {
         return ResponseEntity.ok().body(
-                new ResponseObject("ok", "SUCCESS", songService.update( song))
+                new ResponseObject("ok", "SUCCESS", songService.update(song))
         );
     }
 
@@ -51,22 +51,6 @@ public class SongController {
         );
     }
 
-    @PostMapping(path = "/album/{albumId}/song/{songId}")
-    ResponseEntity<ResponseObject> addSongToAlbum(@PathVariable Long albumId,
-                                                  @PathVariable Long songId) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok", "Success", songService.addSongToAlbum(albumId, songId))
-        );
-    }
-
-    @DeleteMapping(path = "/album/{albumId}/song/{songId}")
-    ResponseEntity<ResponseObject> removeSongFromAlbum(@PathVariable Long albumId,
-                                                  @PathVariable Long songId) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok", "Success",
-                        songService.removeSongFromAlbum(albumId, songId))
-        );
-    }
 
     @GetMapping(path = "/creator/{id}/song")
     ResponseEntity<ResponseObject> getSongByCreatorId(@PathVariable Long id) {
@@ -76,28 +60,6 @@ public class SongController {
 
     }
 
-    @PostMapping(path = "/playlist/{playlistId}/song/{songId}")
-    ResponseEntity<ResponseObject> addSongToPlaylist(@PathVariable Long playlistId,
-                                                     @PathVariable Long songId) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.saveSongToPlaylist(songId, playlistId))
-        );
-
-    }
-
-    @DeleteMapping(path = "/playlist/{playlistId}/song/{songId}")
-    ResponseEntity<ResponseObject> removeSongFromPlaylist(
-            @PathVariable Long playlistId,
-            @PathVariable Long songId) {
-        return ResponseEntity.ok().body(
-                new ResponseObject("ok",
-                        "SUCCESS",
-                        songService.removeSongFromPlaylist(songId, playlistId))
-        );
-
-    }
 
     @PostMapping(path = "/song/patch")
     ResponseEntity<ResponseObject> saveAllSong(@RequestBody List<Song> songs) {
@@ -136,14 +98,13 @@ public class SongController {
     @GetMapping(path = "/song")
     ResponseEntity<ResponseObject> searchByName(
             @RequestParam(name = "name", defaultValue = "") String name,
-            @RequestParam(name = "status",required = false ) Integer status
+            @RequestParam(name = "status", required = false) Integer status
     ) {
         List<Song> songs = new LinkedList<>();
-        if(status == null){
+        if (status == null) {
             songs = songService.searchByName(name);
-        }
-        else {
-            songs = songService.searchByName(name,status);
+        } else {
+            songs = songService.searchByName(name, status);
         }
 
         return ResponseEntity.ok().body(
@@ -152,8 +113,6 @@ public class SongController {
                 )
         );
     }
-
-
 
 
 //    @PreAuthorize("hasAuthority('USER')")
@@ -188,4 +147,15 @@ public class SongController {
                 )
         );
     }
+
+    @GetMapping("/song/topByCategory")
+    ResponseEntity<ResponseObject> getTopSongByCategory() {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        songService.getTopSongByCategory(10L)
+                )
+        );
+    }
 }
+

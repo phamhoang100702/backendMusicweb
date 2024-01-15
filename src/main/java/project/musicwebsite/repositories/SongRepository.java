@@ -80,6 +80,32 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
 
 
+    @Query(
+            value = " select sum(times) as listensOfCategory,category_id from" +
+                    "(select song.id as songId,sc.category_id,listens.times " +
+                    "from Songtbl song,song_category sc,Category category, " +
+                    "(select count(id) as times,songid from click group by songid order by times desc) as listens " +
+                    "where song.id = sc.song_id and category.id = sc.category_id and listens.songid = song.id and song.status=2) " +
+                    "group by category_id order by listensOfCategory desc limit :limit",
+            nativeQuery = true
+    )
+    List<Object[]> getTopCategoryWithMostListens(
+            @RequestParam(name = "limit") Integer limit
+    );
+
+    @Query(
+            value = "select count(click.id) as times,click.songid " +
+                    "from click click,song_category sc " +
+                    "where sc.song_id = click.songid and sc.category_id = :category_id " +
+                    "group by songid order by times desc limit :limit",
+            nativeQuery = true
+    )
+    List<Object[]> getTopSongWithTheMostListensByCategoryId(
+            @RequestParam(name = "category_id")Long category_id,
+            @RequestParam(name = "limit") Integer limit
+    );
+
+
 
 
 }

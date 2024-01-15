@@ -45,3 +45,17 @@ Hibernate: create table user_role (user_id bigint not null, role_id bigint not n
 Hibernate: alter table Usertbl alter column role int
 Hibernate: alter table user_role add constraint FK7ir6hi5jr98lclgjgbyxafneu foreign key (role_id) references Role
 Hibernate: alter table user_role add constraint FKq78fvvyhpk460tqxd12qi92fs foreign key (user_id) references Usertbl
+
+
+select sum(times) as listensOfCategory,category_id from
+(select song.id as songId,sc.category_id,listens.times
+from Songtbl song,song_category sc,Category category,
+(select count(id) as times,songid from click group by songid order by times desc) as listens
+where song.id = sc.song_id and category.id = sc.category_id and listens.songid = song.id and song.status=2)
+group by category_id order by listensOfCategory desc limit 3
+
+
+select count(click.id) as times,click.songid
+from click click,song_category sc
+where sc.song_id = click.songid and sc.category_id = 1
+group by songid order by times desc

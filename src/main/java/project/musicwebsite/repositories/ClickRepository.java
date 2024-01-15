@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.musicwebsite.entity.Click;
 import project.musicwebsite.entity.Song;
+import project.musicwebsite.entity.User;
 import project.musicwebsite.model.dto.ClickDTO;
 
 import java.sql.ResultSet;
@@ -31,7 +32,8 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
                     "FROM Click c " +
                     "WHERE c.createdDate >= :date and c.song.status = 2 " +
                     "GROUP BY c.song " +
-                    "ORDER BY times DESC"
+                    "ORDER BY times DESC " +
+                    "limit 10"
     )
     List<Object[]> countAllClickByDays(@Param("date") Date date);
 
@@ -41,7 +43,8 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
                     "FROM Click c " +
                     "WHERE c.createdDate >= :date and c.song.status = 2 " +
                     "GROUP BY c.song.creator " +
-                    "ORDER BY times DESC"
+                    "ORDER BY times DESC " +
+                    "limit 10"
     )
     List<Object[]> topSinger(@Param("date") Date date);
 
@@ -51,7 +54,8 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
                     "FROM Click click " +
                     "Where click.song.status=2 " +
                     "GROUP BY click.song " +
-                    "ORDER BY times DESC "
+                    "ORDER BY times DESC " +
+                    "limit 10"
                      // You can refer to the alias in the ORDER BY clause
     )
     List<Object[]> countAllBySong();
@@ -68,4 +72,10 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
                     "group by datecount"
     )
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
+
+    @Query(
+            value =  " select distinct(song) from Click  where user=:user  "
+    )
+    List<Song> getHistorySong(
+            @Param("user") User user);
 }

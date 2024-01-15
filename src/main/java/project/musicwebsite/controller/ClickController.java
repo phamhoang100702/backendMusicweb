@@ -81,4 +81,16 @@ public class ClickController {
                         clickService.count())
         );
     }
+
+    @GetMapping("/history/user/{userId}")
+    ResponseEntity<ResponseObject> getHistorySongByUserId(@PathVariable Long userId) {
+        System.out.println(userId);
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        clickService.getHistorySongByUserId(userId)
+                )
+        );
+    }
 }
+

@@ -27,11 +27,19 @@ public interface FollowerRepository extends JpaRepository<Follower,Long> {
     );
 
     @Query(
-            value = "select user from Follower where " +
+            value = "select distinct (user) from Follower where " +
                     " singer=:singer"
     )
     List<User> findAllFollower(
             @RequestParam(name = "singer")Singer singer
+    );
+
+    @Query(
+            value = "select distinct (singer) from Follower where " +
+                    " user=:user"
+    )
+    List<Singer> findFollowedSinger(
+            @RequestParam(name = "user") User user
     );
 
     @Transactional
@@ -43,5 +51,13 @@ public interface FollowerRepository extends JpaRepository<Follower,Long> {
             @RequestParam(name = "singer") Singer singer
     );
 
+//    @Query(
+//            value = "select count(distinct (user)) as times,singer from Followertn " +
+//                    "group by singer " +
+//                    "order by times desc "
+//    )
+//    List<Object[]> getTopSingerFollowers(
+//            @RequestParam(name = "limit") Long limit
+//    );
 
 }

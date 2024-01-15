@@ -114,6 +114,7 @@ public class AuthService {
     }
 
     public Admin adminRegister(Admin admin) {
+        System.out.println("ok");
         if (userRepository.existsUsersByEmail(admin.getEmail())) {
             throw new BadRequestException("User is existed");
         }

@@ -37,7 +37,8 @@ public class Singer extends User {
     @OneToMany(
             mappedBy = "creator",
             fetch = FetchType.LAZY,
-            targetEntity = Song.class
+            targetEntity = Song.class,
+            cascade = CascadeType.ALL
     )
     @JsonIgnore
     private Set<Song> songOfCreator = new HashSet<>();

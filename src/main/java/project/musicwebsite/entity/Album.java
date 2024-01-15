@@ -12,7 +12,6 @@ import java.util.*;
 
 @Entity
 @Table(name="Albumtbl")
-@NoArgsConstructor
 @Data
 public class Album extends AbstractModel{
 
@@ -23,8 +22,7 @@ public class Album extends AbstractModel{
     private Long id;
     @NotBlank(message = "Name is mandatory")
     private String name;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy@HH:mm:ss.SSSZ")
-    private Date publish;
+
     private String thumbnail;
 
     @ManyToOne(
@@ -36,36 +34,12 @@ public class Album extends AbstractModel{
 
     @OneToMany(
             mappedBy = "album",
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     private Set<Song> songs = new HashSet<>();
 
-    public Album(String createdBy, String modifiedBy, String name, Date publish, String thumbnail) {
-        super(createdBy, modifiedBy);
-        this.name = name;
-        this.publish = publish;
-        this.thumbnail = thumbnail;
-    }
-
-    public Album(String createdBy, String modifiedBy, String name, String thumbnail) {
-        super(createdBy, modifiedBy);
-        this.name = name;
-        this.publish = new Date();
-        this.thumbnail = thumbnail;
-    }
-
-    public Album( String name, String thumbnail,Date date) {
+    public Album() {
         super();
-        this.name = name;
-        this.publish = date;
-        this.thumbnail = thumbnail;
-    }
-
-    public Album(String name,String thumbnail){
-        super();
-        this.name = name;
-        this.thumbnail = thumbnail;
-        this.publish = new Date();
     }
 
     @Override

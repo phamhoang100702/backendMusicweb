@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/singer")
-    ResponseEntity<ResponseObject> findSingerByUserId(@PathVariable Long id) {
+    ResponseEntity<ResponseObject> findAllFollowedSingerByUserId(@PathVariable Long id) {
         List<Singer> singers = userService.findFollowedSinger(id);
         return ResponseEntity.ok(
                 new ResponseObject("Ok", "success", singers)

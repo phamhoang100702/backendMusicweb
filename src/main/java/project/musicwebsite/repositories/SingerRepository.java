@@ -15,7 +15,7 @@ import java.util.List;
 @Transactional
 public interface SingerRepository extends JpaRepository<Singer, Long> {
     @Query(
-            value = "select followers.user_id From Followertbl followers where followers.singer_id=?1",
+            value = "select followers.userIid From Followertbl followers where followers.singerId=?1",
             nativeQuery = true
     )
     List<Long> findFollowersBySingerId(Long singer_id);
@@ -58,9 +58,9 @@ public interface SingerRepository extends JpaRepository<Singer, Long> {
                                               @Param("status") Boolean status);
 
     @Query(
-            value = "select  count(fl.user_id) as followers,singer.id,singer.name,singer.nickname,singer.avatar " +
+            value = "select  count(distinct fl.userId) as followers,singer.id,singer.name,singer.nickname,singer.avatar " +
                     " from Followertbl fl,usertbl singer" +
-                    " where singer.id = fl.singer_id and singer.status=true " +
+                    " where singer.id = fl.singerId and singer.status=true " +
                     " group by  singer.id order by followers desc " +
                     "limit :top ",
             nativeQuery = true

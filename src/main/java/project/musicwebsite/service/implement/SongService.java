@@ -6,18 +6,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.musicwebsite.entity.*;
+import project.musicwebsite.entity.Category;
+import project.musicwebsite.entity.Singer;
+import project.musicwebsite.entity.Song;
 import project.musicwebsite.exception.BadRequestException;
-import project.musicwebsite.exception.NoContentException;
 import project.musicwebsite.exception.NotFoundException;
-import project.musicwebsite.model.dto.ChartDTO;
-import project.musicwebsite.model.dto.SongDTO;
-import project.musicwebsite.model.mapper.SongMapper;
+import project.musicwebsite.model.dto.TopSongByCategoryDTO;
 import project.musicwebsite.repositories.*;
 import project.musicwebsite.service.i.ISongService;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SongService implements ISongService {
@@ -29,13 +30,14 @@ public class SongService implements ISongService {
     private PlaylistRepository playlistRepository;
     private CategoryRepository categoryRepository;
     private SongOfPlaylistRepository songOfPlaylistRepository;
+    private ClickRepository clickRepository;
 
 
     @Autowired
     public SongService(SongRepository songRepository, SingerRepository singerRepository,
                        AlbumRepository albumRepository, UserRepository userRepository,
                        PlaylistRepository playlistRepository, CategoryRepository categoryRepository,
-                       SongOfPlaylistRepository songOfPlaylistRepository) {
+                       SongOfPlaylistRepository songOfPlaylistRepository, ClickRepository clickRepository) {
         this.songRepository = songRepository;
         this.singerRepository = singerRepository;
         this.albumRepository = albumRepository;
@@ -43,6 +45,7 @@ public class SongService implements ISongService {
         this.playlistRepository = playlistRepository;
         this.categoryRepository = categoryRepository;
         this.songOfPlaylistRepository = songOfPlaylistRepository;
+        this.clickRepository = clickRepository;
     }
 
     @Override
@@ -71,8 +74,9 @@ public class SongService implements ISongService {
         List<Song> list = songRepository.searchByName(name);
         return list;
     }
-    public List<Song> searchByName(String name,Integer status) {
-        List<Song> list = songRepository.searchByName(name,status);
+
+    public List<Song> searchByName(String name, Integer status) {
+        List<Song> list = songRepository.searchByName(name, status);
         return list;
     }
 
@@ -88,10 +92,18 @@ public class SongService implements ISongService {
     public Song update(Song song) {
         return songRepository.findById(song.getId())
                 .map(song1 -> {
+                    if (song.getFileLyric() != null && song.getFileLyric().isBlank()) {
+                        song1.setFileLyric(song.getFileLyric());
+                    }
+                    if (song.getFileSound() != null && song.getFileSound().isBlank()) {
+                        song1.setFileSound(song.getFileSound());
+                    }
+                    if (song.getAvatar() != null && song.getAvatar().isBlank()) {
+                        song1.setAvatar(song.getAvatar());
+                    }
                     song1.setName(song.getName());
                     song1.setStatus(song.getStatus());
                     song1.setCategories(song.getCategories());
-                    song1.setFileSound(song.getFileSound());
                     song1.setModifiedDate(new Date());
                     song1.setSingers(song.getSingers());
                     return songRepository.save(song1);
@@ -99,33 +111,38 @@ public class SongService implements ISongService {
     }
 
     @Override
-    public Playlist saveSongToPlaylist(Long songId, Long playlistId) {
-        Song song = songRepository.findById(songId).orElseThrow(
-                ()->new NotFoundException("This song is not existed")
-        );
-        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
-                ()->new NotFoundException("This playlist is not existed")
-        );
-        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
-        songOfPlaylist.setPlaylist(playlist);
-        songOfPlaylist.setSong(song);
-        songOfPlaylistRepository.save(songOfPlaylist);
-        return  playlist;
-    }
+    public List<TopSongByCategoryDTO> getTopSongByCategory(Long top) {
+        List<Object[]> list = songRepository.getTopCategoryWithMostListens(3);
+        List<TopSongByCategoryDTO> topSongByCategoryDTOS = new LinkedList<>();
 
-    @Override
-    public Playlist removeSongFromPlaylist(Long songId, Long playlistId) {
-        Song song = songRepository.findById(songId).orElseThrow(
-                ()->new NotFoundException("This song is not existed")
-        );
-        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
-                ()->new NotFoundException("This playlist is not existed")
-        );
-        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
-        songOfPlaylist.setPlaylist(playlist);
-        songOfPlaylist.setSong(song);
-        songOfPlaylistRepository.delete(songOfPlaylist);
-        return  playlist;
+        for (Object[] objects : list) {
+            System.out.println("ok" + objects[1] + "   " + objects[0]);
+            Long id = (Long) objects[1];
+//            Long times = (Long) objects[0];
+            TopSongByCategoryDTO topSongByCategoryDTO = new TopSongByCategoryDTO();
+            System.out.println("oooo");
+            Optional<Category> category = categoryRepository.findById(id);
+            System.out.println("ok111");
+            if (category.isEmpty()) continue;
+            Long categoryId = category.get().getId();
+
+            topSongByCategoryDTO.setCategory(category.get());
+            List<Object[]> listSongIds = songRepository.getTopSongWithTheMostListensByCategoryId(
+                    categoryId, 10);
+            List<Song> songs = new LinkedList<>();
+
+            for (Object[] objects1 : listSongIds) {
+                Long idSong = (Long) objects1[1];
+                Optional<Song> song = songRepository.findById(idSong);
+                if (song.isEmpty()) continue;
+                songs.add(song.get());
+            }
+
+            topSongByCategoryDTO.setSongs(songs);
+            topSongByCategoryDTOS.add(topSongByCategoryDTO);
+
+        }
+        return topSongByCategoryDTOS;
     }
 
 
@@ -137,35 +154,6 @@ public class SongService implements ISongService {
                 .orElseThrow(() -> new NotFoundException("This song is not existed"));
 //        song.get
         songRepository.delete(song);
-    }
-
-    @Override
-    public Album addSongToAlbum(Long albumId, Long songId) {
-        Optional<Album> album = albumRepository.findById(albumId);
-        if (album.isEmpty()) throw new NotFoundException("ALBUM NOT EXISTED");
-        Optional<Song> song = songRepository.findById(songId);
-        Singer singer = album.get().getSinger();
-        if (!singer.equals(song.get().getCreator())) throw new BadRequestException("YOU CAN ONLY ADD YOUR OWN SONGS");
-        song.map(song1 -> {
-            song1.setAlbum(album.get());
-            return songRepository.save(song1);
-        });
-        return album.get();
-    }
-
-
-
-    public Album removeSongFromAlbum(Long albumId, Long songId) {
-        Optional<Album> album = albumRepository.findById(albumId);
-        if (album.isEmpty()) throw new NotFoundException("ALBUM NOT EXISTED");
-        Optional<Song> song = songRepository.findById(songId);
-        Singer singer = album.get().getSinger();
-        if (!singer.equals(song.get().getCreator())) throw new BadRequestException("YOU CAN ONLY ADD YOUR OWN SONGS");
-        song.map(song1 -> {
-            song1.setAlbum(null);
-            return songRepository.save(song1);
-        });
-        return album.get();
     }
 
 
@@ -186,14 +174,8 @@ public class SongService implements ISongService {
     }
 
 
-
-
     public List<Song> saveListSong(List<Song> songs) {
         return songRepository.saveAll(songs);
-    }
-
-    public Song saveOneSong(Song songs) {
-        return songRepository.save(songs);
     }
 
     public Page<Song> getAllByPage(Integer pageNo, Integer pageSize) {
@@ -206,11 +188,10 @@ public class SongService implements ISongService {
         return this.songRepository.searchAllByNameAsPage(name1, pageNo, pageSize);
     }
 
-
-
-
     @Override
     public Song save(Song song) {
+        clickRepository.countAllBySong();
+
         return songRepository.save(song);
     }
 

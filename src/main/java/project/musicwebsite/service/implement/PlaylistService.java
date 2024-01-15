@@ -167,7 +167,37 @@ public class PlaylistService implements IPlaylistService {
                 new NotFoundException("This song is not existed"));
         Playlist playlist = playlistRepository.findFavoritePlaylistForUserByUserId(userId)
                 .orElseThrow(()->new NotFoundException("This playlist is not existed"));
-        songOfPlaylistRepository.deletePlaylistBySongIdAndPlaylistId(userId,playlist.getId());
+        songOfPlaylistRepository.deletePlaylistBySongIdAndPlaylistId(songId,playlist.getId());
         return playlist;
+    }
+
+    @Override
+    public Playlist saveSongToPlaylist(Long songId, Long playlistId) {
+        Song song = songRepository.findById(songId).orElseThrow(
+                ()->new NotFoundException("This song is not existed")
+        );
+        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
+                ()->new NotFoundException("This playlist is not existed")
+        );
+        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
+        songOfPlaylist.setPlaylist(playlist);
+        songOfPlaylist.setSong(song);
+        songOfPlaylistRepository.save(songOfPlaylist);
+        return  playlist;
+    }
+
+    @Override
+    public Playlist removeSongFromPlaylist(Long songId, Long playlistId) {
+        Song song = songRepository.findById(songId).orElseThrow(
+                ()->new NotFoundException("This song is not existed")
+        );
+        Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
+                ()->new NotFoundException("This playlist is not existed")
+        );
+        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
+        songOfPlaylist.setPlaylist(playlist);
+        songOfPlaylist.setSong(song);
+        songOfPlaylistRepository.delete(songOfPlaylist);
+        return  playlist;
     }
 }

@@ -4,15 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Click;
 import project.musicwebsite.entity.Song;
+import project.musicwebsite.entity.User;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.ChartDTO;
 import project.musicwebsite.model.dto.ClickDTO;
 import project.musicwebsite.repositories.ClickRepository;
 import project.musicwebsite.repositories.SongRepository;
+import project.musicwebsite.repositories.UserRepository;
 import project.musicwebsite.service.i.IClickService;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +27,9 @@ public class ClickService implements IClickService {
 
     @Autowired
     SongRepository songRepository;
+    @Autowired
+    UserRepository userRepository;
+
 
 
     @Override
@@ -92,6 +98,7 @@ public class ClickService implements IClickService {
 
     @Override
     public List<ClickDTO> countListens() {
+        System.out.println("AALLLL");
         List<Object[]> list = clickRepository.countAllBySong();
         List<ClickDTO> clickDTOS = new LinkedList<>();
         for (Object[] objects : list) {
@@ -114,4 +121,16 @@ public class ClickService implements IClickService {
     public Long count() {
         return clickRepository.count();
     }
+
+
+    public List<Song> getHistorySongByUserId(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(
+                ()->new NotFoundException("This user is not existed")
+        );
+        System.out.println(userId);
+        List<Song> list =  clickRepository.getHistorySong(user);
+        Collections.reverse(list);
+        return  list;
+    }
+
 }

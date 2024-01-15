@@ -35,6 +35,8 @@ public class UserService implements IUserService {
     ClickRepository clickRepository;
     @Autowired
     SongRepository songRepository;
+    @Autowired
+    FollowerRepository followerRepository;
 
 
     @Override
@@ -90,13 +92,11 @@ public class UserService implements IUserService {
 
     @Override
     public List<Singer> findFollowedSinger(Long id) {
-        List<Long> list = userRepository.findFollowedSingerByUserId(id);
-        if (list.isEmpty()) throw new NotFoundException("You have not follow anyone yet");
-        List<Singer> singers = new ArrayList<>();
-        for (Long item : list) {
-            singers.add(singerRepository.findById(item).get());
-        }
-        return singers;
+        User user = userRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("This user is not existed")
+        );
+        List<Singer> list = followerRepository.findFollowedSinger(user);
+        return  list;
     }
 
     @Override

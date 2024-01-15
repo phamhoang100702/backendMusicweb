@@ -1,11 +1,11 @@
 package project.musicwebsite.service.implement;
 
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.musicwebsite.entity.Album;
 import project.musicwebsite.entity.Singer;
 import project.musicwebsite.entity.Song;
+import project.musicwebsite.exception.BadRequestException;
 import project.musicwebsite.exception.NoContentException;
 import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.AlbumDTO;
@@ -17,10 +17,7 @@ import project.musicwebsite.repositories.SingerRepository;
 import project.musicwebsite.repositories.SongRepository;
 import project.musicwebsite.service.i.IAlbumService;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AlbumService implements IAlbumService {
@@ -33,8 +30,19 @@ public class AlbumService implements IAlbumService {
     SongRepository songRepository;
 
     @Override
-    public Album save( Album album) {
-        return albumRepository.save(album);
+    public Album save(Album album) {
+        System.out.println(album.getThumbnail());
+        Set<Song> songs = album.getSongs();
+        Album album1 = albumRepository.save(album);
+        for(Song song : songs){
+            songRepository.findById(song.getId()).map((song1 -> {
+                if(song1.getCreator()!=null && song1.getCreator().getId()==album.getSinger().getId()){
+                    song1.setAlbum(album1);
+                }
+                return songRepository.save(song1);
+            })).orElseThrow(()->new NotFoundException("This song is not existed"));
+        }
+        return album1;
     }
 
     @Override
@@ -42,7 +50,6 @@ public class AlbumService implements IAlbumService {
         return albumRepository.findById(album.getId())
                 .map(album2 -> {
                     album2.setName(album.getName());
-                    album2.setPublish(album.getPublish());
                     album2.setThumbnail(album.getThumbnail());
                     album2.setModifiedDate(new Date());
                     return albumRepository.save(album2);
@@ -115,21 +122,6 @@ public class AlbumService implements IAlbumService {
     }
 
     @Override
-    public void removeSongFromAlbum(Long albumId, Long songId) {
-        List<Long> ids = songRepository.findSongsByAlbumId(albumId);
-        for (Long id : ids) {
-            if (songId == id) {
-                songRepository.findById(songId).map(song -> {
-                    song.setAlbum(null);
-                    return songRepository.save(song);
-                }).orElseThrow(() -> new NotFoundException("SONG NOT EXISTED"));
-                return;
-            }
-        }
-        throw new NotFoundException("SONG NOT EXISTED IN THIS ALBUM");
-    }
-
-    @Override
     public Long count() {
         return albumRepository.count();
     }
@@ -137,5 +129,35 @@ public class AlbumService implements IAlbumService {
     @Override
     public Long countBySingerId() {
         return null;
+    }
+
+
+    @Override
+    public Album addSongToAlbum(Long albumId, Long songId) {
+        Optional<Album> album = albumRepository.findById(albumId);
+        if (album.isEmpty()) throw new NotFoundException("ALBUM NOT EXISTED");
+        Optional<Song> song = songRepository.findById(songId);
+        Singer singer = album.get().getSinger();
+        if (!singer.equals(song.get().getCreator())) throw new BadRequestException("YOU CAN ONLY ADD YOUR OWN SONGS");
+        song.map(song1 -> {
+            song1.setAlbum(album.get());
+            return songRepository.save(song1);
+        });
+        return album.get();
+    }
+
+
+    @Override
+    public Album removeSongFromAlbum(Long albumId, Long songId) {
+        Optional<Album> album = albumRepository.findById(albumId);
+        if (album.isEmpty()) throw new NotFoundException("ALBUM NOT EXISTED");
+        Optional<Song> song = songRepository.findById(songId);
+        Singer singer = album.get().getSinger();
+        if (!singer.equals(song.get().getCreator())) throw new BadRequestException("YOU CAN ONLY ADD YOUR OWN SONGS");
+        song.map(song1 -> {
+            song1.setAlbum(null);
+            return songRepository.save(song1);
+        });
+        return album.get();
     }
 }

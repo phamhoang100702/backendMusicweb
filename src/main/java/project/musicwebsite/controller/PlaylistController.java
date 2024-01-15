@@ -1,7 +1,6 @@
 package project.musicwebsite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -111,7 +110,7 @@ public class PlaylistController {
             @RequestBody AddingSongsToPlaylistRequest arraySong,
             @PathVariable Long id
     ) {
-        for(Long id1 : arraySong.getArraySong()){
+        for (Long id1 : arraySong.getArraySong()) {
             System.out.println("sss" + id1);
         }
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -150,7 +149,7 @@ public class PlaylistController {
 
     @GetMapping("/playlist/mainpage")
     ResponseEntity<ResponseObject> searchAllPlaylistForUserByName(
-            @RequestParam(name = "name",defaultValue = "") String name
+            @RequestParam(name = "name", defaultValue = "") String name
     ) {
         return ResponseEntity.ok().body(
                 new ResponseObject(
@@ -172,7 +171,7 @@ public class PlaylistController {
     }
 
     @PostMapping("/user/{userId}/playlist/favorite/{songId}")
-    ResponseEntity<ResponseObject> addSongToPlaylist(
+    ResponseEntity<ResponseObject> addSongToFavoritePlaylist(
             @PathVariable Long userId,
             @PathVariable Long songId
     ) {
@@ -180,7 +179,7 @@ public class PlaylistController {
                 new ResponseObject(
                         "ok",
                         "SUCCESS",
-                        playlistService.addSongToFavoritePlaylist(userId,songId))
+                        playlistService.addSongToFavoritePlaylist(userId, songId))
         );
     }
 
@@ -193,9 +192,32 @@ public class PlaylistController {
                 new ResponseObject(
                         "ok",
                         "SUCCESS",
-                        playlistService.removeSongFromFavoritePlaylist(userId,songId))
+                        playlistService.removeSongFromFavoritePlaylist(userId, songId))
         );
     }
 
+
+    @PostMapping(path = "/playlist/{playlistId}/song/{songId}")
+    ResponseEntity<ResponseObject> addSongToPlaylist(@PathVariable Long playlistId,
+                                                     @PathVariable Long songId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        playlistService.saveSongToPlaylist(songId, playlistId))
+        );
+
+    }
+
+    @DeleteMapping(path = "/playlist/{playlistId}/song/{songId}")
+    ResponseEntity<ResponseObject> removeSongFromPlaylist(
+            @PathVariable Long playlistId,
+            @PathVariable Long songId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok",
+                        "SUCCESS",
+                        playlistService.removeSongFromPlaylist(songId, playlistId))
+        );
+
+    }
 
 }

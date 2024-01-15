@@ -64,6 +64,13 @@ public class User extends AbstractModel {
     @JsonIgnore
     private Set<Follower> followers = new TreeSet<>();
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "creator"
+    )
+    @JsonIgnore
+    private Set<Playlist> createdPlaylist = new TreeSet<>();
 
 
     @OneToMany(

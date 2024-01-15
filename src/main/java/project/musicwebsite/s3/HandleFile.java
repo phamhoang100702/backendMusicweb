@@ -15,10 +15,10 @@ public class HandleFile {
     public HandleFile() {
     }
 
-    private boolean isSoundFile(MultipartFile file) {
+    public boolean isSoundFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         System.out.println("extension " + fileExtension);
-        return Arrays.asList(new String[]{"mp3"})
+        return Arrays.asList(new String[]{"mp3","mp4"})
                 .contains(fileExtension.trim().toLowerCase());
     }
 
@@ -48,7 +48,7 @@ public class HandleFile {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         return  fileExtension;
     }
-    private boolean isLyricFile(MultipartFile file) {
+    public boolean isLyricFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         return Arrays.asList(new String[]{"lrc"})
                 .contains(fileExtension.trim().toLowerCase());
@@ -68,9 +68,9 @@ public class HandleFile {
 
     }
 
-    private boolean isImageFile(MultipartFile file) {
+    public boolean isImageFile(MultipartFile file) {
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-        return Arrays.asList(new String[]{"jpeg","png","bmp","jpg"})
+        return Arrays.asList(new String[]{"jpeg","png","bmp","jpg","tiff","svg"})
                 .contains(fileExtension.trim().toLowerCase());
     }
 

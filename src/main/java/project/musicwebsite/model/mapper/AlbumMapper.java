@@ -15,7 +15,6 @@ public class AlbumMapper {
         AlbumDTO albumDTO = new AlbumDTO();
         albumDTO.setId(album.getId());
         albumDTO.setName(album.getName());
-        albumDTO.setPublish(album.getPublish());
         albumDTO.setThumbnail(album.getThumbnail());
         return albumDTO;
     }

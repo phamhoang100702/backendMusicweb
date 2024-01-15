@@ -21,6 +21,8 @@ public interface IPlaylistService {
     void delete(Long id);
 
     Long getTotalPlayList();
+    Playlist saveSongToPlaylist(Long idSong,Long idPlaylist);
+    Playlist removeSongFromPlaylist(Long idSong,Long idPlaylist);
 
     List<Song> getAllSongByPlaylist(Long id);
 

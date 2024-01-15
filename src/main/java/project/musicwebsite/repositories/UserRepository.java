@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Boolean existsUsersByEmail(String email);
 
     @Query(
-            value = "select followers.singer_id from Followertbl followers  where followers.user_id=?1",
+            value = "select followers.singerId from Followertbl followers  where followers.userId=?1",
             nativeQuery = true
     )
     List<Long> findFollowedSingerByUserId(Long user_id);

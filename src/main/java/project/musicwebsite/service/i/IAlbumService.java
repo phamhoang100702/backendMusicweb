@@ -20,10 +20,12 @@ public interface IAlbumService {
 
     List<SongDTO> getSongByAlbumId(Long albumId);
 
-    void removeSongFromAlbum(Long albumId,Long songId);
+    Album removeSongFromAlbum(Long albumId, Long songId);
 
     Long count();
 
     Long countBySingerId();
+
+    Album addSongToAlbum(Long albumId,Long songId);
 
 }

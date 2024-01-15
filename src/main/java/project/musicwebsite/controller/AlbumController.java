@@ -47,7 +47,22 @@ public class AlbumController {
                 )
         );
     }
+    @PostMapping(path = "/album/{albumId}/song/{songId}")
+    ResponseEntity<ResponseObject> addSongToAlbum(@PathVariable Long albumId,
+                                                  @PathVariable Long songId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "Success", albumService.addSongToAlbum(albumId, songId))
+        );
+    }
 
+    @DeleteMapping(path = "/album/{albumId}/song/{songId}")
+    ResponseEntity<ResponseObject> removeSongFromAlbum(@PathVariable Long albumId,
+                                                       @PathVariable Long songId) {
+        return ResponseEntity.ok().body(
+                new ResponseObject("ok", "Success",
+                        albumService.removeSongFromAlbum(albumId, songId))
+        );
+    }
     @PutMapping("/album")
     ResponseEntity<ResponseObject> updateAlbum(@RequestBody Album album ){
         return ResponseEntity.status(HttpStatus.OK).body(
