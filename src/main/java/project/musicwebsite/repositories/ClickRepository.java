@@ -74,8 +74,14 @@ public interface ClickRepository extends JpaRepository<Click,Long> {
     List<Object[]> getChartInforInTimePeriod(@RequestParam(name = "date") Date date);
 
     @Query(
-            value =  " select distinct(song) from Click  where user=:user  "
+            value = "select distinct " +
+                    "click.songId as songId,click.id " +
+                    "from Click click " +
+                    "where click.userId = :userId " +
+                    "order by click.id desc " +
+                    "",
+            nativeQuery = true
     )
-    List<Song> getHistorySong(
-            @Param("user") User user);
+    List<Object[]> getHistorySong(
+            @Param("userId") Long  userId);
 }

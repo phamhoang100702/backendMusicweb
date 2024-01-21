@@ -10,7 +10,7 @@ import java.util.*;
 @Entity
 @Data
 @NoArgsConstructor
-public class Category extends AbstractModel{
+public class Category  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

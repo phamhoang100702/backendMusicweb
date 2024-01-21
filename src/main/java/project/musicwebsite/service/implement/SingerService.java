@@ -65,12 +65,21 @@ public class SingerService implements ISingerService {
 
     @Override
     public Singer update(Singer singer) {
+
         return singerRepository.findById(singer.getId())
                 .map(singer2 -> {
                     singer2.setName(singer.getName());
                     singer2.setBio(singer.getBio());
+                    singer2.setPassword(singer.getPassword());
+                    if(singer.getAvatar()!=null && !singer.getAvatar().isBlank())  {
+                        singer2.setAvatar(singer.getAvatar());
+                    }
                     singer2.setSocialMediaLink(singer.getSocialMediaLink());
                     singer2.setStatus(singer.getStatus());
+                    if(singer.getPassword()!=null && !singer.getPassword().isBlank()){
+                        String password = passwordEncoder.encode(singer.getPassword());
+                        singer2.setPassword(password);
+                    }
                     return singerRepository.save(singer2);
                 }).orElseThrow(() -> new NotFoundException("SINGER NOT EXISTED"));
     }

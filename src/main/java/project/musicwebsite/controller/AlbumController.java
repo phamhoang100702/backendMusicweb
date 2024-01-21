@@ -19,7 +19,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> getAll( ){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.getAll()
                 )
@@ -30,7 +30,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> findById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.findById(id)
                 )
@@ -41,7 +41,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> save(@RequestBody Album album){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.save(album)
                 )
@@ -67,7 +67,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> updateAlbum(@RequestBody Album album ){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.update(album)
                 )
@@ -79,7 +79,7 @@ public class AlbumController {
         albumService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         "{}"
                 )
@@ -90,7 +90,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> getAllAlbumBySinger(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.getBySinger(id)
                 )
@@ -111,7 +111,7 @@ public class AlbumController {
     ResponseEntity<ResponseObject> getAllSongByAlbum(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         albumService.getSongByAlbumId(id)
                 )

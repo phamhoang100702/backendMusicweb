@@ -23,7 +23,7 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         categoryService.addList(list)
                 )
@@ -35,7 +35,7 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         categoryService.save(category)
                 )
@@ -48,7 +48,7 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         categoryService.getAll()
                 )
@@ -60,7 +60,7 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         categoryService.findById(id)
                 )
@@ -73,7 +73,7 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(
-                        "OK",
+                        "ok",
                         "FINDING SUCCESS",
                         ""
                 )

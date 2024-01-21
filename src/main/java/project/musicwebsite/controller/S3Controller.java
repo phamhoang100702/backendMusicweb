@@ -31,7 +31,7 @@ public class S3Controller {
     @Autowired
     HandleFile handleFile;
 
-    final static String path = "https://musicwebsite.s3.ap-east-1.amazonaws.com/";
+    final static String path = "https://mybucketmusic.s3.ap-south-1.amazonaws.com/";
 
     @PostMapping(value = "", consumes = MediaType.ALL_VALUE)
     ResponseEntity<ResponseObject> upFile(@RequestParam(name = "sound",required = false) MultipartFile sound,
@@ -151,7 +151,7 @@ public class S3Controller {
         try {
             s3Service.putObject(this.s3Bucket.getName(), pathImages, file.getBytes());
             return ResponseEntity.ok().body(
-                    new ResponseObject("Ok", "success", url)
+                    new ResponseObject("ok", "success", url)
             );
         } catch (Exception e) {
             throw new FileUploadIoException("File is not acceptable");

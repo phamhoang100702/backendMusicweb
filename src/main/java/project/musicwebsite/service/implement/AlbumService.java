@@ -107,7 +107,7 @@ public class AlbumService implements IAlbumService {
     }
 
     @Override
-    public List<SongDTO> getSongByAlbumId(Long albumId) {
+    public List<Song> getSongByAlbumId(Long albumId) {
         List<Long> ids = songRepository.findSongsByAlbumId(albumId);
         List<Song> songs = new LinkedList<>();
         for (Long id : ids) {
@@ -118,7 +118,7 @@ public class AlbumService implements IAlbumService {
             ).orElseThrow(() -> new NotFoundException("SONG NOT EXISTED"));
         }
         if (songs.isEmpty()) throw new NoContentException("DONT HAVE ANY SONG");
-        return SongMapper.convertList(songs);
+        return songs;
     }
 
     @Override
@@ -143,6 +143,7 @@ public class AlbumService implements IAlbumService {
             song1.setAlbum(album.get());
             return songRepository.save(song1);
         });
+        album.get().getSongs().add(song.get());
         return album.get();
     }
 
@@ -158,6 +159,8 @@ public class AlbumService implements IAlbumService {
             song1.setAlbum(null);
             return songRepository.save(song1);
         });
+        album.get().getSongs().remove(song.get());
+
         return album.get();
     }
 }

@@ -10,6 +10,8 @@ import project.musicwebsite.entity.ResponseObject;
 import project.musicwebsite.entity.Song;
 import project.musicwebsite.service.implement.ClickService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/v1/click")
 public class ClickController {
@@ -70,6 +72,16 @@ public class ClickController {
                 new ResponseObject("ok",
                         "SAVE SUCCESS",
                         clickService.countListensBySong(song))
+        );
+    }
+
+    @PostMapping("/patch")
+    ResponseEntity<ResponseObject> addPatch(@RequestBody
+                                            List<Click> clicks ) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok",
+                        "SAVE SUCCESS",
+                        clickService.addPatch(clicks))
         );
     }
 

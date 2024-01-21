@@ -18,7 +18,7 @@ public interface IAlbumService {
 
     List<Album> getByName(String string);
 
-    List<SongDTO> getSongByAlbumId(Long albumId);
+    List<Song> getSongByAlbumId(Long albumId);
 
     Album removeSongFromAlbum(Long albumId, Long songId);
 

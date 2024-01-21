@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClickService implements IClickService {
@@ -124,13 +125,31 @@ public class ClickService implements IClickService {
 
 
     public List<Song> getHistorySongByUserId(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(
-                ()->new NotFoundException("This user is not existed")
-        );
-        System.out.println(userId);
-        List<Song> list =  clickRepository.getHistorySong(user);
-        Collections.reverse(list);
-        return  list;
+
+        List<Object[]> list =  clickRepository.getHistorySong(userId);
+        List<Long> list1 = new LinkedList<>();
+        for(Object[] objects : list){
+            if(list1.contains((Long)objects[0])){
+                continue;
+            }
+            list1.add((Long) objects[0]);
+        }
+        List<Song> songs = new LinkedList<>();
+        int index = 0;
+        for(Long id : list1){
+            if(index==20) break;
+            Optional<Song> song = songRepository.findById(id);
+            if(song.isEmpty()) continue;
+            songs.add(song.get());
+            index++;
+        }
+
+        return  songs;
     }
+
+    public List<Click> addPatch(List<Click> clicks){
+        return  clickRepository.saveAll(clicks);
+    }
+
 
 }

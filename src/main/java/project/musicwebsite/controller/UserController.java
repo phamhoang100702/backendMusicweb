@@ -28,7 +28,7 @@ public class UserController {
     ResponseEntity<ResponseObject> save(@Valid @RequestBody User user) {
         User user1 = userService.save(user);
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "Saving success", user1)
+                new ResponseObject("ok", "Saving success", user1)
         );
     }
 
@@ -38,7 +38,7 @@ public class UserController {
     ) {
         List<User> list = userService.searchAllUserByName(name) ;
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "Finding success", list)
+                new ResponseObject("ok", "Finding success", list)
         );
     }
 
@@ -46,7 +46,7 @@ public class UserController {
     ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         Optional<User> user1 = userService.findById(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "Finding success", user1)
+                new ResponseObject("ok", "Finding success", user1)
         );
     }
 
@@ -55,7 +55,7 @@ public class UserController {
 
         User user1 = userService.update( user);
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "Updating success", user1)
+                new ResponseObject("ok", "Updating success", user1)
         );
     }
 
@@ -64,7 +64,7 @@ public class UserController {
         System.out.println(id);
         userService.delete(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "Delete success", "")
+                new ResponseObject("ok", "Delete success", "")
         );
     }
 
@@ -72,7 +72,7 @@ public class UserController {
     ResponseEntity<ResponseObject> findAllFollowedSingerByUserId(@PathVariable Long id) {
         List<Singer> singers = userService.findFollowedSinger(id);
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "success", singers)
+                new ResponseObject("ok", "success", singers)
         );
     }
 
@@ -88,7 +88,7 @@ public class UserController {
     @PostMapping("/patch")
         ResponseEntity<ResponseObject> saveListUser(@RequestBody ArrayList<User> list) {
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "success", userService.saveListUser(list))
+                new ResponseObject("ok", "success", userService.saveListUser(list))
         );
     }
 
@@ -96,14 +96,14 @@ public class UserController {
     @GetMapping("/count")
     ResponseEntity<ResponseObject> getTotalUser() {
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "success", userService.count())
+                new ResponseObject("ok", "success", userService.count())
         );
     }
 
     @GetMapping("/chart/date/{date}")
     ResponseEntity<ResponseObject> countByDate(@PathVariable Long date) {
         return ResponseEntity.ok(
-                new ResponseObject("Ok", "success", userService.getChartInforInTimePeriod(date))
+                new ResponseObject("ok", "success", userService.getChartInforInTimePeriod(date))
         );
     }
 

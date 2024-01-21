@@ -26,13 +26,14 @@ public class AuthService {
     private SingerRepository singerRepository;
     private CensorRepository censorRepository;
     private AdminRepository adminRepository;
+    private PlaylistRepository playlistRepository;
 
     @Autowired
     public AuthService(JwtIssuer jwtIssuer, AuthenticationManager authenticationManager,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                        SingerRepository singerRepository, CensorRepository censorRepository,
-                       AdminRepository adminRepository) {
+                       AdminRepository adminRepository,PlaylistRepository playlistRepository) {
         this.jwtIssuer = jwtIssuer;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -41,6 +42,8 @@ public class AuthService {
         this.singerRepository = singerRepository;
         this.censorRepository = censorRepository;
         this.adminRepository = adminRepository;
+        this.playlistRepository = playlistRepository;
+        this.playlistRepository = playlistRepository;
     }
 
     public LoginDTO adminLogin(String email, String password) {
@@ -110,7 +113,13 @@ public class AuthService {
         Role role = roleRepository.findByName("USER").get();
         user.addRole(role);
 
-        return userRepository.save(user);
+        User user1 =  userRepository.save(user);
+        Playlist playlist = new Playlist();
+        playlist.setRole("FAVORITE");
+        playlist.setCreator(user1);
+        playlist.setStatus(false);
+        playlistRepository.save(playlist);
+        return user1;
     }
 
     public Admin adminRegister(Admin admin) {
@@ -139,7 +148,13 @@ public class AuthService {
         singer.addRole(role);
         singer.addRole(role1);
 
-        return singerRepository.save(singer);
+        Singer singer1 =  singerRepository.save(singer);
+        Playlist playlist = new Playlist();
+        playlist.setRole("FAVORITE");
+        playlist.setCreator(singer1);
+        playlist.setStatus(false);
+        playlistRepository.save(playlist);
+        return  singer1;
     }
 
     public User censorRegister(Censor censor) {

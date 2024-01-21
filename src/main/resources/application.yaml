@@ -19,12 +19,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 aws:
-  region: ap-east-1
-  accessKey: AKIATMN2MSYEUJKMIIB2
-  secretKey: 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
+  region: ap-south-1
+  accessKey: AKIAVAS43EMUOAF7AF3C
+  secretKey: 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
   s3:
     bucket:
-      name: musicwebsite
+      name: mybucketmusic
 
 server:
   port: 9000

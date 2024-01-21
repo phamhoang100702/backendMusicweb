@@ -71,11 +71,12 @@ public class SongService implements ISongService {
     @Override
     public List<Song> searchByName(String name) {
         String name1 = name.toLowerCase();
-        List<Song> list = songRepository.searchByName(name);
+        List<Song> list = songRepository.searchByName(name1);
         return list;
     }
 
     public List<Song> searchByName(String name, Integer status) {
+        name = name.toLowerCase();
         List<Song> list = songRepository.searchByName(name, status);
         return list;
     }
@@ -92,13 +93,13 @@ public class SongService implements ISongService {
     public Song update(Song song) {
         return songRepository.findById(song.getId())
                 .map(song1 -> {
-                    if (song.getFileLyric() != null && song.getFileLyric().isBlank()) {
+                    if (song.getFileLyric() != null && !song.getFileLyric().isBlank()) {
                         song1.setFileLyric(song.getFileLyric());
                     }
-                    if (song.getFileSound() != null && song.getFileSound().isBlank()) {
+                    if (song.getFileSound() != null && !song.getFileSound().isBlank()) {
                         song1.setFileSound(song.getFileSound());
                     }
-                    if (song.getAvatar() != null && song.getAvatar().isBlank()) {
+                    if (song.getAvatar() != null && !song.getAvatar().isBlank()) {
                         song1.setAvatar(song.getAvatar());
                     }
                     song1.setName(song.getName());
@@ -134,7 +135,7 @@ public class SongService implements ISongService {
             for (Object[] objects1 : listSongIds) {
                 Long idSong = (Long) objects1[1];
                 Optional<Song> song = songRepository.findById(idSong);
-                if (song.isEmpty()) continue;
+                if (song.isEmpty() || song.get().getStatus()!=2) continue;
                 songs.add(song.get());
             }
 

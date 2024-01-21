@@ -12,7 +12,6 @@ import java.util.*;
 
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "Usertbl")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -72,6 +71,10 @@ public class User extends AbstractModel {
     @JsonIgnore
     private Set<Playlist> createdPlaylist = new TreeSet<>();
 
+
+    public User() {
+        super();
+    }
 
     @OneToMany(
             mappedBy = "user",
