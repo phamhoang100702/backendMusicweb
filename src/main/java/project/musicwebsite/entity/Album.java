@@ -7,13 +7,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.*;
 
 
 @Entity
 @Table(name="Albumtbl")
 @Data
-public class Album extends AbstractModel{
+public class Album extends AbstractModel implements Serializable {
 
     @Id
     @GeneratedValue(

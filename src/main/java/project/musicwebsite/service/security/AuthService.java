@@ -1,5 +1,6 @@
 package project.musicwebsite.service.security;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +15,9 @@ import project.musicwebsite.exception.NotFoundException;
 import project.musicwebsite.model.dto.LoginDTO;
 import project.musicwebsite.repositories.*;
 import project.musicwebsite.security.UserPrincipal;
+import project.musicwebsite.security.jwt.JwtDecoder;
 import project.musicwebsite.security.jwt.JwtIssuer;
+import project.musicwebsite.security.jwt.JwtToUserPrincipalConverter;
 
 @Service
 public class AuthService {
@@ -27,13 +30,16 @@ public class AuthService {
     private CensorRepository censorRepository;
     private AdminRepository adminRepository;
     private PlaylistRepository playlistRepository;
+    private JwtDecoder jwtDecoder;
+    private JwtToUserPrincipalConverter jwtToUserPrincipalConverter;
 
     @Autowired
     public AuthService(JwtIssuer jwtIssuer, AuthenticationManager authenticationManager,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                        SingerRepository singerRepository, CensorRepository censorRepository,
-                       AdminRepository adminRepository,PlaylistRepository playlistRepository) {
+                       AdminRepository adminRepository, PlaylistRepository playlistRepository,
+                    JwtDecoder jwtDecoder, JwtToUserPrincipalConverter principalConverter) {
         this.jwtIssuer = jwtIssuer;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -44,6 +50,8 @@ public class AuthService {
         this.adminRepository = adminRepository;
         this.playlistRepository = playlistRepository;
         this.playlistRepository = playlistRepository;
+        this.jwtDecoder = jwtDecoder;
+        this.jwtToUserPrincipalConverter = principalConverter;
     }
 
     public LoginDTO adminLogin(String email, String password) {
@@ -69,8 +77,6 @@ public class AuthService {
             System.out.println(principal.getAuthorities().toString());
             return LoginDTO.builder()
                     .token(token)
-                    .userId(principal.getId())
-                    .roles(principal.getAuthorities().toString())
                     .build();
         }catch (Exception e){
             throw new BadRequestException("Wrong username or password");
@@ -95,8 +101,6 @@ public class AuthService {
             System.out.println("role: " + principal.getAuthorities());
             return LoginDTO.builder()
                     .token(token)
-                    .userId(principal.getId())
-                    .roles(principal.getAuthorities().toString())
                     .build();
         } catch (Exception e) {
             throw new BadRequestException("Wrong username or password");
@@ -171,6 +175,38 @@ public class AuthService {
 
         return censorRepository.save(censor);
     }
+
+    public User getInformationByToke(String token){
+        DecodedJWT decodedJWT = jwtDecoder.decode(token);
+        UserPrincipal userPrincipal = jwtToUserPrincipalConverter.convert(decodedJWT);
+//        userPrincipal.getId()*/
+        Long id = userPrincipal.getId();
+        String authority = userPrincipal.getAuthorities().toString();
+        if(authority!=null && !authority.isBlank()){
+            if(authority.contains("ADMIN")){
+                return  userRepository.findById(id).orElseThrow(
+                        ()-> new NotFoundException("This user is not exist")
+                );
+            }
+            else if(authority.contains("SINGER")){
+                return singerRepository.findById(id).orElseThrow(
+                        ()-> new NotFoundException("This singer is not existed")
+                );
+            }
+            else if(authority.contains("CENSOR")){
+                return  censorRepository.findById(id).orElseThrow(
+                        ()-> new NotFoundException("This user is not existed")
+                );
+            }
+            else {
+                return userRepository.findById(id).orElseThrow(
+                        () -> new NotFoundException("This user is not existed")
+                );
+            }
+        }
+        return  null;
+    }
+
 
 
 }

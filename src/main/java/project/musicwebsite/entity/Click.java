@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @Entity
-public class Click extends AbstractModel{
+public class Click extends AbstractModel implements Serializable {
     @SequenceGenerator(
         name="click_generator",
             allocationSize = 1

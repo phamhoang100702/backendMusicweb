@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Data
 @Entity
 @DiscriminatorValue("4")
-public class Censor extends User {
+public class Censor extends User implements Serializable {
 
     private String address;
 //    @NotBlank(message = "phone is mandatory")

@@ -194,10 +194,7 @@ public class PlaylistService implements IPlaylistService {
         Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(
                 ()->new NotFoundException("This playlist is not existed")
         );
-        SongOfPlaylist songOfPlaylist = new SongOfPlaylist();
-        songOfPlaylist.setPlaylist(playlist);
-        songOfPlaylist.setSong(song);
-        songOfPlaylistRepository.delete(songOfPlaylist);
+        songOfPlaylistRepository.deletePlaylistBySongIdAndPlaylistId(songId,playlistId);
         return  playlist;
     }
 }
