@@ -20,8 +20,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 aws:
   region: ap-south-1
-  accessKey: AKIAVAS43EMUOAF7AF3C
-  secretKey: 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
+  accessKey:
+  secretKey:
   s3:
     bucket:
       name: mybucketmusic

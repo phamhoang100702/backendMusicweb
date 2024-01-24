@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                 .exceptionHandling(h -> h.authenticationEntryPoint(unauthorizedHandler))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
-                                .requestMatchers("/").permitAll()
+                                .requestMatchers("/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/v1/**").hasAnyAuthority("ADMIN","CENSOR","SINGER","USER")
                         .anyRequest().authenticated()

@@ -45,9 +45,10 @@ public class S3Controller {
             urls.put("sound","");
             urls.put("lyric","");
             urls.put("avatar","");
+        System.out.println("vao day di ");
 
             if(sound != null && handleFile.isSoundFile(sound)){
-
+                System.out.println("vao 1 ");
                 String soundExtension = handleFile.fileExtension(sound);
                 songFile = "song/sounds/" + name + "." + soundExtension;
                 s3Service.putObject(this.s3Bucket.getName(), songFile, sound.getBytes());
@@ -55,6 +56,8 @@ public class S3Controller {
                 urls.put("sound",url1);
             }
             if ( lyric!=null && handleFile.isLyricFile(lyric)) {
+                System.out.println("vao 2 ");
+
                 String lyricExtension = handleFile.fileExtension(lyric);
                 lyricFile = "song/lyrics/" + name + "." + lyricExtension;
                 s3Service.putObject(this.s3Bucket.getName(), lyricFile, lyric.getBytes());
@@ -62,6 +65,8 @@ public class S3Controller {
                 urls.put("lyric",url2);
             }
             if(avatar!=null && handleFile.isImageFile(avatar)){
+                System.out.println("vao 3 ");
+
                 String avatarExtension = handleFile.fileExtension(avatar);
                 avatarFile = "song/avatars/" + name + "." + avatarExtension;
                 String url3 = path + avatarFile;

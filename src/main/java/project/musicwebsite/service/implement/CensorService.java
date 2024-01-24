@@ -60,6 +60,8 @@ public class CensorService implements ICensorService {
                     censor1.setName(censor.getName());
                     censor1.setPhone(censor.getPhone());
                     censor1.setStatus(censor.getStatus());
+                    String password = passwordEncoder.encode(censor.getPassword());
+                    censor1.setPassword(password);
                     return censorRepository.save(censor1);
                 }).orElseThrow(() -> new NotFoundException("This censor is not existed"));
     }
