@@ -14,6 +14,8 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
+    // hoang ok
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getById(@PathVariable Long id) {
         System.out.println("access");
