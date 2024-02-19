@@ -13,3 +13,6 @@ docker run  --name my-postgres -d -p 5432:4433   -e POSTGRES_PASSWORD=1 postgres
 
 
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=Example@2022# -d mysql:tag --character-set-server=utf8mb4
+
+
+# done commit

@@ -14,7 +14,7 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
-    // hoang ok
+    // done
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getById(@PathVariable Long id) {
